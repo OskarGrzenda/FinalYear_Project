@@ -1,9 +1,34 @@
 import { StyleSheet, Text, View, Button, TextInput  } from 'react-native';
 import * as React from 'react';
+import { auth, authentication } from '../Firebase';
+import { signInWithEmailAndPassword, signOut  } from "firebase/auth";
 
 function LogInScreen({ navigation }) {
   const [email, setEmail] = React.useState('')
   const [passsword, setPassword] = React.useState('')
+
+  const [isSignedIn, setIsSignedIn] = React.useState(false);
+
+  const LogInUser = ()=>{
+    signInWithEmailAndPassword(authentication, email, passsword)
+    .then((re) =>{
+      setIsSignedIn(true);
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+  }
+
+  const SignOutUser = ()=>{
+    signOut(authentication)
+    .then((re) =>{
+      setIsSignedIn(false);
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+  }
+ 
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -24,11 +49,17 @@ function LogInScreen({ navigation }) {
         secureTextEntry
       />
 
-      <Button
+      {/* <Button
         style={{marginBottom: 20}}
         title="Log In"
-        onPress={() => navigation.navigate('MainMenuScreen')}
-      />
+        onPress={ () => navigation.navigate('MainMenuScreen') } //() => navigation.navigate('MainMenuScreen')
+      /> */}
+
+      {isSignedIn === true?
+        <Button title="Sign out" onPress={SignOutUser}></Button>
+        :
+        <Button title="Sign In" onPress={LogInUser}></Button>
+      }
     </View>
   );
 }

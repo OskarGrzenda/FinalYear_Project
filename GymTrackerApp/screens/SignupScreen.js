@@ -1,16 +1,38 @@
 import { StyleSheet, Text, View, Button, TextInput  } from 'react-native';
 import * as React from 'react';
-
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { authentication } from '../Firebase';
 
 
 function SignUpScreen({ navigation }) {
+    //const [username, setUsername] = React.useState('')
     const [email, setEmail] = React.useState('')
     const [passsword, setNewPassword] = React.useState('')
-    const [confirmPasswordd, confirmPassword] = React.useState('')
+
+    const [isSignedIn, setIsSignedIn] = React.useState(false);
+
+    const SignUpUser = () =>{
+        createUserWithEmailAndPassword(authentication, email, passsword)
+        .then((re) =>{
+            console.log(re);
+            setIsSignedIn(true)
+        })
+        .catch((re) =>{
+            console.log(re);
+        })
+    }
 
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text>Sign Up Screen</Text>
+
+        {/* <TextInput
+          style={styles.input}
+          value={username}
+          onChangeText={text => setUsername(text)}
+          placeholder="Username"
+          secureTextEntry
+        /> */}
   
         <TextInput
           style={styles.input}
@@ -27,19 +49,10 @@ function SignUpScreen({ navigation }) {
           secureTextEntry
         />
   
-        <Text>Confirm Password</Text>
-        <TextInput
-          style={styles.input}
-          value={confirmPasswordd}
-          onChangeText={text => confirmPassword(text)}
-          placeholder="Password"
-          secureTextEntry
-        />
-  
         <Button
           style={{marginBottom: 20}}
-          title="Log In"
-          onPress={() => navigation.navigate('MainMenuScreen')}
+          title="Sign In"
+          onPress={SignUpUser}
         />
   
       </View>
