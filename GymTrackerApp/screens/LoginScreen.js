@@ -1,21 +1,33 @@
-import { StyleSheet, Text, View, Button, TextInput  } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Alert   } from 'react-native';
 import * as React from 'react';
-import { auth, authentication } from '../Firebase';
-import { signInWithEmailAndPassword, signOut  } from "firebase/auth";
+import { useState } from 'react';
+import { authentication } from '../Firebase';
+import { signInWithEmailAndPassword, signOut, getAuth, onAuthStateChanged } from "firebase/auth";
 
 function LogInScreen({ navigation }) {
-  const [email, setEmail] = React.useState('')
-  const [passsword, setPassword] = React.useState('')
+  const [email, setEmail] = useState('')
+  const [passsword, setPassword] = useState('')
 
-  const [isSignedIn, setIsSignedIn] = React.useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   const LogInUser = ()=>{
     signInWithEmailAndPassword(authentication, email, passsword)
     .then((re) =>{
       setIsSignedIn(true);
+      navigation.navigate('MainMenuScreen')
     })
     .catch((err)=>{
       console.log(err);
+      Alert.alert
+      (
+        "Error",
+        "Invalid Log In Information",
+        [
+          {
+            text: "Cancel",
+          },
+        ],
+      );
     })
   }
 
@@ -29,6 +41,19 @@ function LogInScreen({ navigation }) {
     })
   }
  
+  // //Check if user exists and is signed in
+  // //If they are signed then access app
+  // const auth = getAuth();
+  // onAuthStateChanged(auth, (user) => {
+  //   if (user) {
+  //     const uid = user.uid;
+  //     //navigation.navigate('MainMenuScreen')
+  //   } else {
+  //     // User is signed out
+  //     // ...
+  //     //navigation.navigate('Home')
+  //   }
+  // });
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
