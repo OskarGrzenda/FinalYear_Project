@@ -1,37 +1,57 @@
-import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity, Pressable, FlatList  } from 'react-native';
+import { StyleSheet, Text, View, Pressable, FlatList  } from 'react-native';
 import React, { useState } from 'react'
 import AddWorkout from '../components/addWorkout';
+import { db } from "../Firebase";
+import { doc, setDoc } from 'firebase/firestore';
 
-function MainMenuScreen(){
+  const MainMenuScreen = ({navigation}) => {
 
+
+    const SendData = async ()=>{ 
+      const workout = "Arms";
+      
+      await setDoc(doc(db, "WorkoutDay", "TestDocument" ), {
+        name: workout,
+      });
+    }
+
+  //Array for workouts
   const [workouts, setWorkout] = useState([
-    { } //text: 'Chest Day', key: '1'
+      {} //text: 'Chest Day', key: '1'
   ]);
 
-  const submitHandler = (text) => {
-    setWorkout((prevTodos) => {
+  const submitHandler = (text) => 
+  {
+    setWorkout((prevWorkout) => 
+    {
       return [
         { text: text, key: Math.random().toString() },
-        ...prevTodos
+        ...prevWorkout
       ]
     })
   };
 
-  const onPressFunction = () => {
-
+  const onPressFunction = () => 
+  { 
+    navigation.navigate('ExerciseScreen')
   }
 
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Main Menu Screen</Text>
 
         <Text>Enter Workout Name</Text>
+
+        <Pressable onPress={ SendData }>
+          <Text>Set Data</Text>
+        </Pressable>
         
         <AddWorkout submitHandler={submitHandler} />
+
+        {/* Create a new button for exercises */}
         <FlatList 
           data={workouts}
           renderItem={({ item }) => (
-            <Pressable onPress={onPressFunction}>
+            <Pressable onPress={ onPressFunction }>
               <Text>{item.text}</Text>
             </Pressable>
           )}

@@ -5,7 +5,6 @@ import { authentication } from '../Firebase';
 
 
 function SignUpScreen({ navigation }) {
-    //const [username, setUsername] = React.useState('')
     const [email, setEmail] = React.useState('')
     const [passsword, setNewPassword] = React.useState('')
 
@@ -26,14 +25,6 @@ function SignUpScreen({ navigation }) {
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text>Sign Up Screen</Text>
 
-        {/* <TextInput
-          style={styles.input}
-          value={username}
-          onChangeText={text => setUsername(text)}
-          placeholder="Username"
-          secureTextEntry
-        /> */}
-  
         <TextInput
           style={styles.input}
           value={email}

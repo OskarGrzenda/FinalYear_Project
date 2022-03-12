@@ -16,11 +16,10 @@ export default function AddWorkout( {submitHandler} ) {
                 onChangeText={changeHandler}
             >
             </TextInput>
-            <Button onPress={() => submitHandler(text)} title='add workout' color='coral' />
+            <Button onPress={() => submitHandler(text) } title='add workout' color='coral' /> 
         </View>
     )
 }
-
 const styles = StyleSheet.create({
     input: {
         marginBottom: 10,

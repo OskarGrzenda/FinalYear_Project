@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, TextInput, Alert   } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Alert } from 'react-native';
 import * as React from 'react';
 import { useState } from 'react';
 import { authentication } from '../Firebase';
