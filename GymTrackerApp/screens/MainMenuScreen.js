@@ -1,34 +1,50 @@
-import { StyleSheet, Text, View, Pressable, FlatList  } from 'react-native';
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, Pressable, FlatList, Button  } from 'react-native';
+import React, { useState, useEffect } from 'react'
 import AddWorkout from '../components/addWorkout';
 import { db } from "../Firebase";
-import { doc, setDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
 
   const MainMenuScreen = ({navigation}) => {
 
+    const [workoutsDB, setWorkoutsDB] = useState([]);
+    const workoutCol = collection(db, 'WorkoutDay');
 
-    const SendData = async ()=>{ 
-      const workout = "Arms";
-      
-      await setDoc(doc(db, "WorkoutDay", "TestDocument" ), {
-        name: workout,
-      });
-    }
+    useEffect(() => {
+
+      const GetData = async () => {
+        // const workoutCol = collection(db, 'WorkoutDay');
+        const workoutSnapshot = await getDocs(workoutCol);
+        // const workoutList = workoutSnapshot.docs.map(doc => doc.data());
+        setWorkoutsDB(workoutSnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+
+        // console.log(workoutList);
+      }
+
+      GetData();
+    }, []);
+
+ 
 
   //Array for workouts
-  const [workouts, setWorkout] = useState([
-      {} //text: 'Chest Day', key: '1'
-  ]);
+  // const [workouts, setWorkout] = useState([
+  //     {} //text: 'Chest Day', key: '1'
+  // ]);
 
-  const submitHandler = (text) => 
+  const submitHandler = async (text) => 
   {
-    setWorkout((prevWorkout) => 
-    {
-      return [
-        { text: text, key: Math.random().toString() },
-        ...prevWorkout
-      ]
+    //Set New Exercise Name & Add it to a new document in the collection 
+    const randomCollection = Math.random().toString();
+    await setDoc(doc(db, "WorkoutDay", randomCollection ), {
+      name: text,
     })
+
+    // setWorkout((prevWorkout) => 
+    // {
+    //   return [
+    //     { text: text, key: Math.random().toString() },
+    //     ...prevWorkout
+    //   ]
+    // })
   };
 
   const onPressFunction = () => 
@@ -41,21 +57,31 @@ import { doc, setDoc } from 'firebase/firestore';
 
         <Text>Enter Workout Name</Text>
 
-        <Pressable onPress={ SendData }>
-          <Text>Set Data</Text>
-        </Pressable>
+        {/* <Pressable onPress={ GetData }>
+          <Text>Get Data</Text>
+        </Pressable> */}
         
         <AddWorkout submitHandler={submitHandler} />
 
         {/* Create a new button for exercises */}
-        <FlatList 
+        {/* <FlatList 
           data={workouts}
           renderItem={({ item }) => (
             <Pressable onPress={ onPressFunction }>
               <Text>{item.text}</Text>
             </Pressable>
           )}
-        />
+        /> */}
+
+          {workoutsDB.map((workoutName) => {
+            return (
+              // <Pressable onPress={ onPressFunction }>
+              //   <Text>{workoutName.name}</Text>
+              // </Pressable>
+              <Button onPress={() => submitHandler(text) } title={workoutName.name} color='black'/> 
+
+            );
+          })}
       </View>
     );
   }
