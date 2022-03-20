@@ -1,34 +1,35 @@
 import { StyleSheet, Text, View, Pressable, FlatList, Button  } from 'react-native';
 import React, { useState, useEffect } from 'react'
 import AddWorkout from '../components/addWorkout';
-import { db } from "../Firebase";
-import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
+import { db, useAuth, authentication } from "../Firebase";
+import { collection, doc, getDocs, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
+import { signOut  } from "firebase/auth";
 
   const MainMenuScreen = ({navigation}) => {
 
+    // const [workoutsDB, setWorkoutsDB] = useState([]);
+    // const workoutCol = collection(db, 'WorkoutDay');
+
     const [workoutsDB, setWorkoutsDB] = useState([]);
-    const workoutCol = collection(db, 'WorkoutDay');
+    console.log(workoutsDB);
 
-    useEffect(() => {
-
-      const GetData = async () => {
-        // const workoutCol = collection(db, 'WorkoutDay');
-        const workoutSnapshot = await getDocs(workoutCol);
-        // const workoutList = workoutSnapshot.docs.map(doc => doc.data());
-        setWorkoutsDB(workoutSnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-
-        // console.log(workoutList);
-      }
-
-      GetData();
+    useEffect (() => {
+      const realtime = onSnapshot(collection(db, "WorkoutDay"), (snapshot) => {
+        setWorkoutsDB(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      });
+      return realtime;
     }, []);
 
- 
-
-  //Array for workouts
-  // const [workouts, setWorkout] = useState([
-  //     {} //text: 'Chest Day', key: '1'
-  // ]);
+    // useEffect(() => {
+    //   const GetData = async () => {
+    //     // const workoutCol = collection(db, 'WorkoutDay');
+    //     const workoutSnapshot = await getDocs(workoutCol);
+    //     // const workoutList = workoutSnapshot.docs.map(doc => doc.data());
+    //     setWorkoutsDB(workoutSnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    //     // console.log(workoutList);
+    //   }
+    //   GetData();
+    // }, []);
 
   const submitHandler = async (text) => 
   {
@@ -37,14 +38,6 @@ import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
     await setDoc(doc(db, "WorkoutDay", randomCollection ), {
       name: text,
     })
-
-    // setWorkout((prevWorkout) => 
-    // {
-    //   return [
-    //     { text: text, key: Math.random().toString() },
-    //     ...prevWorkout
-    //   ]
-    // })
   };
 
   const onPressFunction = () => 
@@ -52,36 +45,44 @@ import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
     navigation.navigate('ExerciseScreen')
   }
 
-    return (
+  const deletDoc = async (id) =>
+  {
+    const docRef = doc(db, "WorkoutDay", id);
+    await deleteDoc(docRef);
+  }
+
+  const currentUser = useAuth();
+
+  
+  const SignOutUser = ()=>{
+    signOut(authentication)
+    .then((re) =>{
+      navigation.navigate('Home')
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+  }
+
+
+  return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Currently logged in as: {currentUser?.email}</Text>
 
         <Text>Enter Workout Name</Text>
-
-        {/* <Pressable onPress={ GetData }>
-          <Text>Get Data</Text>
-        </Pressable> */}
         
         <AddWorkout submitHandler={submitHandler} />
 
-        {/* Create a new button for exercises */}
-        {/* <FlatList 
-          data={workouts}
-          renderItem={({ item }) => (
-            <Pressable onPress={ onPressFunction }>
-              <Text>{item.text}</Text>
-            </Pressable>
-          )}
-        /> */}
-
-          {workoutsDB.map((workoutName) => {
+          {workoutsDB.map((data) => {
             return (
-              // <Pressable onPress={ onPressFunction }>
-              //   <Text>{workoutName.name}</Text>
-              // </Pressable>
-              <Button onPress={() => submitHandler(text) } title={workoutName.name} color='black'/> 
-
-            );
+                <View style={{ flexDirection:"row" }} >
+                  <Button onPress={() => onPressFunction() } title={data.name} key={data.id} color='black'/> 
+                  <Button title={'X'} color='red' onPress={() => deletDoc(data.id) }></Button>
+                </View>
+              );
           })}
+          <Button title="Sign out" onPress={SignOutUser}></Button>
+
       </View>
     );
   }

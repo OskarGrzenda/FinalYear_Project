@@ -2,12 +2,11 @@ import { StyleSheet, Text, View, Button, TextInput, Alert } from 'react-native';
 import * as React from 'react';
 import { useState } from 'react';
 import { authentication } from '../Firebase';
-import { signInWithEmailAndPassword, signOut, getAuth, onAuthStateChanged } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut  } from "firebase/auth";
 
 function LogInScreen({ navigation }) {
   const [email, setEmail] = useState('')
   const [passsword, setPassword] = useState('')
-
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   const LogInUser = ()=>{
@@ -40,20 +39,6 @@ function LogInScreen({ navigation }) {
       console.log(err);
     })
   }
- 
-  // //Check if user exists and is signed in
-  // //If they are signed then access app
-  // const auth = getAuth();
-  // onAuthStateChanged(auth, (user) => {
-  //   if (user) {
-  //     const uid = user.uid;
-  //     //navigation.navigate('MainMenuScreen')
-  //   } else {
-  //     // User is signed out
-  //     // ...
-  //     //navigation.navigate('Home')
-  //   }
-  // });
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -73,12 +58,6 @@ function LogInScreen({ navigation }) {
         placeholder="Password"
         secureTextEntry
       />
-
-      {/* <Button
-        style={{marginBottom: 20}}
-        title="Log In"
-        onPress={ () => navigation.navigate('MainMenuScreen') } //() => navigation.navigate('MainMenuScreen')
-      /> */}
 
       {isSignedIn === true?
         <Button title="Sign out" onPress={SignOutUser}></Button>

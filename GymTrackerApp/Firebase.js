@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore } from 'firebase/firestore';
+import { useState, useEffect } from "react";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -18,5 +19,18 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
 export const authentication = getAuth(app);
+
+//Hook
+export function useAuth()
+{
+  const[ currentUser, setCurrentUser ] = useState();
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(authentication, user => setCurrentUser(user));
+    return unsub;
+  }, [])
+
+  return currentUser;
+}
 
 

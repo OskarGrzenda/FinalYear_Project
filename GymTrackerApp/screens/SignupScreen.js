@@ -1,12 +1,13 @@
 import { StyleSheet, Text, View, Button, TextInput  } from 'react-native';
 import * as React from 'react';
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { authentication } from '../Firebase';
 
 
 function SignUpScreen({ navigation }) {
     const [email, setEmail] = React.useState('')
     const [passsword, setNewPassword] = React.useState('')
+
 
     const [isSignedIn, setIsSignedIn] = React.useState(false);
 
