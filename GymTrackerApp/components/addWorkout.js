@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, TextInput, Button } from 'react-native';
+import { useAuth } from "../Firebase";
 
-export default function AddWorkout( {submitHandler} ) {
+export default function AddWorkout( {sendData} ) {
     const [text, setText] = useState('');
-
+    const currentUser = useAuth();
     const changeHandler = (val) => {
         setText(val)
     }
@@ -16,7 +17,7 @@ export default function AddWorkout( {submitHandler} ) {
                 onChangeText={changeHandler}
             >
             </TextInput>
-            <Button onPress={() => submitHandler(text) } title='add workout' color='coral' /> 
+            <Button onPress={() => sendData(text, currentUser.uid) } title='add workout' color='coral' /> 
         </View>
     )
 }

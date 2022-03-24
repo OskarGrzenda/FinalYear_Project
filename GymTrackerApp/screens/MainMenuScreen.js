@@ -2,16 +2,17 @@ import { StyleSheet, Text, View, Pressable, FlatList, Button  } from 'react-nati
 import React, { useState, useEffect } from 'react'
 import AddWorkout from '../components/addWorkout';
 import { db, useAuth, authentication } from "../Firebase";
-import { collection, doc, getDocs, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
 import { signOut  } from "firebase/auth";
+import UserProfile from '../components/UserProfile';
 
   const MainMenuScreen = ({navigation}) => {
 
     // const [workoutsDB, setWorkoutsDB] = useState([]);
     // const workoutCol = collection(db, 'WorkoutDay');
-
+    const currentUser = useAuth();
     const [workoutsDB, setWorkoutsDB] = useState([]);
-    console.log(workoutsDB);
+    // console.log(workoutsDB);
 
     useEffect (() => {
       const realtime = onSnapshot(collection(db, "WorkoutDay"), (snapshot) => {
@@ -31,28 +32,33 @@ import { signOut  } from "firebase/auth";
     //   GetData();
     // }, []);
 
-  const submitHandler = async (text) => 
+  const addWorkouts = async (text, uid) => 
   {
     //Set New Exercise Name & Add it to a new document in the collection 
     const randomCollection = Math.random().toString();
     await setDoc(doc(db, "WorkoutDay", randomCollection ), {
       name: text,
+      uid: uid,
+      ubid: randomCollection,
     })
   };
 
-  const onPressFunction = () => 
+  const openWorkout = (id) => 
   { 
     navigation.navigate('ExerciseScreen')
+    // console.log(id);
   }
+
+  // const nextPage = () =>
+  // {
+  //   navigation.navigate('ExerciseScreen')
+  // }
 
   const deletDoc = async (id) =>
   {
     const docRef = doc(db, "WorkoutDay", id);
     await deleteDoc(docRef);
   }
-
-  const currentUser = useAuth();
-
   
   const SignOutUser = ()=>{
     signOut(authentication)
@@ -67,19 +73,26 @@ import { signOut  } from "firebase/auth";
 
   return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
+      <UserProfile />
+
       <Text>Currently logged in as: {currentUser?.email}</Text>
+      <Text>User Id: {currentUser?.uid}</Text>
 
         <Text>Enter Workout Name</Text>
         
-        <AddWorkout submitHandler={submitHandler} />
+        <AddWorkout sendData={addWorkouts} />
 
           {workoutsDB.map((data) => {
-            return (
-                <View style={{ flexDirection:"row" }} >
-                  <Button onPress={() => onPressFunction() } title={data.name} key={data.id} color='black'/> 
-                  <Button title={'X'} color='red' onPress={() => deletDoc(data.id) }></Button>
-                </View>
-              );
+            if(data.uid == currentUser?.uid)
+              {
+                return (
+                  <View style={{ flexDirection:"row" }} key={data.id} >
+                    <Button onPress={() => openWorkout(data.id) } title={data.name}  color='black'/> 
+                    <Button title={'X'} color='red' onPress={() => deletDoc(data.id) }></Button>
+                  </View>
+                );
+              }
           })}
           <Button title="Sign out" onPress={SignOutUser}></Button>
 
