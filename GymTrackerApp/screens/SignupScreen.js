@@ -1,25 +1,47 @@
-import { StyleSheet, Text, View, Button, TextInput  } from 'react-native';
-import * as React from 'react';
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { StyleSheet, Text, View, Button, TextInput, Alert  } from 'react-native';
+// import * as React from 'react';
+import React, { useState, useEffect } from 'react'
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { authentication } from '../Firebase';
 
-
 function SignUpScreen({ navigation }) {
-    const [email, setEmail] = React.useState('')
-    const [passsword, setNewPassword] = React.useState('')
+    const [email, setEmail] = useState('')
+    const [passsword, setNewPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
 
-
-    const [isSignedIn, setIsSignedIn] = React.useState(false);
+    // const [isSignedIn, setIsSignedIn] = useState(false);
 
     const SignUpUser = () =>{
+      if(passsword == confirmPassword)
+      {
         createUserWithEmailAndPassword(authentication, email, passsword)
         .then((re) =>{
             console.log(re);
-            setIsSignedIn(true)
+            // setIsSignedIn(true)
+            sendEmailVerification(authentication.currentUser)
+            .then(() => {
+              navigation.navigate('LoginScreen')
+
+              console.log("Email Sent!")
+            });
+
         })
         .catch((re) =>{
             console.log(re);
         })
+      }else
+      {
+        Alert.alert
+        (
+          "Error",
+          "Passwords don't match!",
+          [
+            {
+              text: "Cancel",
+            },
+          ],
+        );
+      }
     }
 
     return (
@@ -40,7 +62,15 @@ function SignUpScreen({ navigation }) {
           placeholder="Password"
           secureTextEntry
         />
-  
+
+        <TextInput
+          style={styles.input}
+          value={confirmPassword}
+          onChangeText={text => setConfirmPassword(text)}
+          placeholder="Confirm Password"
+          secureTextEntry
+        />
+        
         <Button
           style={{marginBottom: 20}}
           title="Sign In"

@@ -40,12 +40,13 @@ import UserProfile from '../components/UserProfile';
       name: text,
       uid: uid,
       ubid: randomCollection,
+      exerciseArray: [],
     })
   };
 
   const openWorkout = (id) => 
   { 
-    navigation.navigate('ExerciseScreen')
+    navigation.navigate('ExerciseScreen', {id})
     // console.log(id);
   }
 
