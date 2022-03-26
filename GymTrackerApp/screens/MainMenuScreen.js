@@ -75,7 +75,7 @@ import UserProfile from '../components/UserProfile';
   return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
-      <UserProfile />
+      {/* <UserProfile /> */}
 
       <Text>Currently logged in as: {currentUser?.email}</Text>
       <Text>User Id: {currentUser?.uid}</Text>
@@ -96,6 +96,11 @@ import UserProfile from '../components/UserProfile';
               }
           })}
           <Button title="Sign out" onPress={SignOutUser}></Button>
+          
+          <Button
+            title="Profile"
+            onPress={() => navigation.navigate('UserProfile')}
+          />
 
       </View>
     );

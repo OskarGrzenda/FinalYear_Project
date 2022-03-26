@@ -1,9 +1,17 @@
-import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity, Pressable, FlatList  } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity, Pressable, FlatList, Dimensions  } from 'react-native';
 import React, { useState, useEffect } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { db, useAuth, authentication } from "../Firebase";
 import { collection, doc, setDoc, deleteDoc, onSnapshot, updateDoc, deleteField, FieldValue, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { MainMenuScreen } from './MainMenuScreen';
+
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+} from 'react-native-chart-kit'
 
 function ExerciseScreen( { route }){
 
@@ -129,6 +137,7 @@ function ExerciseScreen( { route }){
 
                       <Button title={'X'} color='red' onPress={() => deletDoc(obj.exercise, obj.weight, obj.reps, obj.sets, obj.exerciseUID) }></Button>
                     
+                      
                     </View> 
                   );
                   output[i] = (tempItem);
@@ -139,6 +148,39 @@ function ExerciseScreen( { route }){
                 <View key={data.id} >
                   {output}
                   {/* <Text>{output.exerciseArray[0].exercise}</Text> */}
+
+                  <LineChart
+                    data={{
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                    datasets: [{
+                        data: [
+                        Math.random() * 100,
+                        Math.random() * 100,
+                        Math.random() * 100,
+                        Math.random() * 100,
+                        Math.random() * 100,
+                        Math.random() * 100
+                        ]
+                    }]
+                    }}
+                    width={Dimensions.get('window').width} // from react-native
+                    height={220}
+                    chartConfig={{
+                    backgroundColor: '#e26a00',
+                    backgroundGradientFrom: '#fb8c00',
+                    backgroundGradientTo: '#ffa726',
+                    decimalPlaces: 2, // optional, defaults to 2dp
+                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                    style: {
+                        borderRadius: 16
+                    }
+                    }}
+                    bezier
+                    style={{
+                    marginVertical: 8,
+                    borderRadius: 16
+                    }}
+                  />
                 </View>
               );
           }

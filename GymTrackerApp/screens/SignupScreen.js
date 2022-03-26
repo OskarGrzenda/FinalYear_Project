@@ -28,8 +28,48 @@ function SignUpScreen({ navigation }) {
         })
         .catch((re) =>{
             console.log(re);
+            if(passsword.length < 6)
+            {
+              Alert.alert
+              (
+                "Error",
+                "Password must be 6 digits or greater!",
+                [
+                  {
+                    text: "Cancel",
+                  },
+                ],
+              );
+            }
+            else if(email == "")
+            {
+              Alert.alert
+              (
+                "Error",
+                "Input email!",
+                [
+                  {
+                    text: "Cancel",
+                  },
+                ],
+              );
+            }
+            else if(re)
+            {
+              Alert.alert
+              (
+                "Error",
+                "Not a valid email or email in use!",
+                [
+                  {
+                    text: "Cancel",
+                  },
+                ],
+              );
+            }
         })
-      }else
+      }
+      else if(passsword != confirmPassword)
       {
         Alert.alert
         (

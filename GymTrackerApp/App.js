@@ -6,6 +6,7 @@ import LoginScreen from './screens/LoginScreen';
 import SignUpScreen from './screens/SignupScreen';
 import MainMenuScreen from './screens/MainMenuScreen';
 import ExerciseScreen from './screens/ExerciseScreen';
+import UserProfile from './components/UserProfile';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -40,6 +41,8 @@ function App() {
         <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
         <Stack.Screen name="MainMenuScreen" component={MainMenuScreen} />
         <Stack.Screen name="ExerciseScreen" component={ExerciseScreen} />
+        <Stack.Screen name="UserProfile" component={UserProfile} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -20,9 +20,28 @@ function LogInScreen({ navigation }) {
   const LogInUser = ()=>{
 
     signInWithEmailAndPassword(authentication, email, passsword)
+
     .then((re) =>{
       // setIsSignedIn(true);
-      navigation.navigate('MainMenuScreen')
+      // console.log(authentication.currentUser.emailVerified);
+      // if(authentication.currentUser.emailVerified == true)
+      // {
+        navigation.navigate('MainMenuScreen')
+      // }
+      // else
+      // {
+      //   Alert.alert
+      //   (
+      //     "Error",
+      //     "Email has not been verified!",
+      //     [
+      //       {
+      //         text: "Cancel",
+      //       },
+      //     ],
+      //   );
+      // }
+      // navigation.navigate('MainMenuScreen')
 
     })
     .catch((err)=>{
@@ -40,8 +59,12 @@ function LogInScreen({ navigation }) {
     })
   }
 
-  const setBoolean = () => {
+  const setBooleanTrue = () => {
     setForgotPasswordBoolean(true);
+  }
+
+  const setBooleanFalse = () => {
+    setForgotPasswordBoolean(false);
   }
 
   const resetPassword = () => {
@@ -105,7 +128,9 @@ function LogInScreen({ navigation }) {
           placeholder="Confirm new Password"
             /> */}
 
-          <Button title="Reset Password" onPress={resetPassword}></Button>
+          <Button title="Send Reset Link" onPress={resetPassword}></Button>
+          <Button title="Back" onPress={setBooleanFalse}></Button>
+
 
         </View>
 
@@ -129,7 +154,7 @@ function LogInScreen({ navigation }) {
               secureTextEntry
             />
 
-            <Pressable onPress={setBoolean}>
+            <Pressable onPress={setBooleanTrue}>
               <Text>Forgot Password?</Text>
             </Pressable>
 
