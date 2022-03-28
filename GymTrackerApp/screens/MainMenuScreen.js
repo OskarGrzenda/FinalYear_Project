@@ -4,7 +4,6 @@ import AddWorkout from '../components/addWorkout';
 import { db, useAuth, authentication } from "../Firebase";
 import { collection, doc, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
 import { signOut  } from "firebase/auth";
-import UserProfile from '../components/UserProfile';
 
   const MainMenuScreen = ({navigation}) => {
 
@@ -47,13 +46,7 @@ import UserProfile from '../components/UserProfile';
   const openWorkout = (id) => 
   { 
     navigation.navigate('ExerciseScreen', {id})
-    // console.log(id);
   }
-
-  // const nextPage = () =>
-  // {
-  //   navigation.navigate('ExerciseScreen')
-  // }
 
   const deletDoc = async (id) =>
   {
@@ -75,7 +68,6 @@ import UserProfile from '../components/UserProfile';
   return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
-      {/* <UserProfile /> */}
 
       <Text>Currently logged in as: {currentUser?.email}</Text>
       <Text>User Id: {currentUser?.uid}</Text>
@@ -96,11 +88,9 @@ import UserProfile from '../components/UserProfile';
               }
           })}
           <Button title="Sign out" onPress={SignOutUser}></Button>
-          
-          <Button
-            title="Profile"
-            onPress={() => navigation.navigate('UserProfile')}
-          />
+
+          <Button title="Profile" onPress={() => navigation.navigate('UserProfile')}/>
+          <Button title="Progress Pictures" onPress={() => navigation.navigate('ProgressPictures')}/>
 
       </View>
     );

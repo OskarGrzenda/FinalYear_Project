@@ -20,6 +20,16 @@ function SignUpScreen({ navigation }) {
             // setIsSignedIn(true)
             sendEmailVerification(authentication.currentUser)
             .then(() => {
+              Alert.alert
+              (
+                "Succes!",
+                "Successfully created account!",
+                [
+                  {
+                    text: "Cancel",
+                  },
+                ],
+              );  
               navigation.navigate('LoginScreen')
 
               console.log("Email Sent!")
