@@ -1,17 +1,14 @@
-import { StyleSheet, Text, View, Pressable, FlatList, Button  } from 'react-native';
+import { StyleSheet, Text, View, Pressable, FlatList, Button, ScrollView  } from 'react-native';
 import React, { useState, useEffect } from 'react'
 import AddWorkout from '../components/addWorkout';
 import { db, useAuth, authentication } from "../Firebase";
-import { collection, doc, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, setDoc, deleteDoc, onSnapshot, Timestamp } from 'firebase/firestore';
 import { signOut  } from "firebase/auth";
 
   const MainMenuScreen = ({navigation}) => {
 
-    // const [workoutsDB, setWorkoutsDB] = useState([]);
-    // const workoutCol = collection(db, 'WorkoutDay');
     const currentUser = useAuth();
     const [workoutsDB, setWorkoutsDB] = useState([]);
-    // console.log(workoutsDB);
 
     useEffect (() => {
       const realtime = onSnapshot(collection(db, "WorkoutDay"), (snapshot) => {
@@ -19,17 +16,6 @@ import { signOut  } from "firebase/auth";
       });
       return realtime;
     }, []);
-
-    // useEffect(() => {
-    //   const GetData = async () => {
-    //     // const workoutCol = collection(db, 'WorkoutDay');
-    //     const workoutSnapshot = await getDocs(workoutCol);
-    //     // const workoutList = workoutSnapshot.docs.map(doc => doc.data());
-    //     setWorkoutsDB(workoutSnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    //     // console.log(workoutList);
-    //   }
-    //   GetData();
-    // }, []);
 
   const addWorkouts = async (text, uid) => 
   {
@@ -40,6 +26,8 @@ import { signOut  } from "firebase/auth";
       uid: uid,
       ubid: randomCollection,
       exerciseArray: [],
+      date: Timestamp.now().toDate(),
+
     })
   };
 
@@ -54,43 +42,51 @@ import { signOut  } from "firebase/auth";
     await deleteDoc(docRef);
   }
   
-  const SignOutUser = ()=>{
-    signOut(authentication)
-    .then((re) =>{
-      navigation.navigate('Home')
-    })
-    .catch((err)=>{
-      console.log(err);
-    })
-  }
-
-
   return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={styles.mainView}>
+      <ScrollView>
 
+      {/* <Text>Currently logged in as: {currentUser?.email}</Text>
+      <Text>User Id: {currentUser?.uid}</Text> */}
 
-      <Text>Currently logged in as: {currentUser?.email}</Text>
-      <Text>User Id: {currentUser?.uid}</Text>
+        <View style={{ flexDirection:"row"}} >
+          <View style={{ width:196}}>
+            <Button color= '#000000' title="Profile Page" onPress={() => navigation.navigate('UserProfile')}/>
+          </View>
+          <View style={{ width:196}}>
+            <Button title="Progress Pictures" onPress={() => navigation.navigate('ProgressPictures')} color='#000000'/>
+          </View>
+        </View>
 
-        <Text>Enter Workout Name</Text>
-        
+        <View style={styles.space} />
+
         <AddWorkout sendData={addWorkouts} />
+
+        <View style={styles.space} />
 
           {workoutsDB.map((data) => {
             if(data.uid == currentUser?.uid)
               {
                 return (
-                  <View style={{ flexDirection:"row" }} key={data.id} >
-                    <Button onPress={() => openWorkout(data.id) } title={data.name}  color='black'/> 
-                    <Button title={'X'} color='red' onPress={() => deletDoc(data.id) }></Button>
-                  </View>
+
+                    <View style={{ flexDirection:"row", justifyContent: 'center' }} key={data.id} >
+                        <View style={{width: 200, padding:10}} >
+                          <Button onPress={() => openWorkout(data.id) } title={data.name}  color='#ff6a00'/> 
+                        </View>
+                        <View style={styles.space} />
+                        <View style={{padding:10}}>
+                          <Button title={'X'} color='red' onPress={() => deletDoc(data.id) }></Button>
+                        </View>
+
+                    </View>
                 );
               }
           })}
-          <Button title="Sign out" onPress={SignOutUser}></Button>
 
-          <Button title="Profile" onPress={() => navigation.navigate('UserProfile')}/>
-          <Button title="Progress Pictures" onPress={() => navigation.navigate('ProgressPictures')}/>
+          <View style={styles.space} />
+
+
+       </ScrollView>
 
       </View>
     );
@@ -98,23 +94,26 @@ import { signOut  } from "firebase/auth";
 
 const styles = StyleSheet.create
 ({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   button: {
     alignItems: "center",
     backgroundColor: "#DDDDDD",
-    padding: 10
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
     padding: 10,
+    justifyContent: 'center' 
+
   },
+  space: {
+    width: 20, 
+    height: 20,
+  },
+  textStyle: {
+    fontWeight: 'bold',
+    justifyContent: 'center',
+  },
+  mainView:{
+    flex: 1, 
+    alignItems: 'center', 
+    justifyContent: 'center'
+  }
 });
 
 export default MainMenuScreen;

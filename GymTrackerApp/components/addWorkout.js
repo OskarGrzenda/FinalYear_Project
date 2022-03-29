@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Button } from 'react-native';
+import { StyleSheet, View, TextInput, Button, Text } from 'react-native';
 import { useAuth } from "../Firebase";
 
 export default function AddWorkout( {sendData} ) {
@@ -10,23 +10,34 @@ export default function AddWorkout( {sendData} ) {
     }
 
     return (
-        <View>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
+            <Text style={styles.textStyle}>Enter Workout Name</Text>
+
             <TextInput
-                style={StyleSheet.input}
+                style={styles.input}
                 placeholder='new workout'
                 onChangeText={changeHandler}
+                textAlign={'center'}
             >
             </TextInput>
-            <Button onPress={() => sendData(text, currentUser.uid) } title='add workout' color='coral' /> 
+            <View style={{width: 200}}>
+                <Button onPress={() => sendData(text, currentUser.uid) } title='add workout' color='#000000' /> 
+            </View>
         </View>
     )
 }
 const styles = StyleSheet.create({
     input: {
-        marginBottom: 10,
-        paddingHorizontal: 8,
-        paddingVertical: 6,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd'
-    }
+        height: 40,
+        width: 240,
+        margin: 12,
+        borderWidth: 4,
+        padding: 10,
+        backgroundColor: 'white'
+      },
+      textStyle: {
+        fontWeight: 'bold',
+        justifyContent: 'center',
+      },
 })

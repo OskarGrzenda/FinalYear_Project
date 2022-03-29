@@ -75,7 +75,9 @@ const ProgressPictures = () => {
             console.log("The Url " + x);
             //Set New Exercise Name & Add it to a new document in the collection 
             const randomProgressID = Math.random().toString();
-             setDoc(doc(db, "ProgressInfo", randomProgressID ), {
+            var today = new Date().toString();
+            
+             setDoc(doc(db, "ProgressInfo", today ), {
               date: Timestamp.now().toDate(),
               weight: weight,
               uid: currentUser.uid,
@@ -87,35 +89,22 @@ const ProgressPictures = () => {
         }
       };
 
-      // // Return image from storage
-      // useEffect (() => {
-      //   const func = async () => {
-      //     //Where you will be returning from
-      //     const reference = ref(storage, currentUser?.uid + '/'+ 'test.jpg' ); //+ 'test.jpg'
-      //     await getDownloadURL(reference).then((x) => {
-      //       setImage(x);
-      //       console.log(x);
-      //     })
-      //   }
-      //   func();
-      // }, []);
+      const deletDoc = async (id) =>
+      {
+        const docRef = doc(db, "ProgressInfo", id);
+        await deleteDoc(docRef);
+      }
 
     return (
       <ScrollView>
         <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text>Progress Pictures</Text>
+            <Text style={styles.textStyle}>Progress Pictures</Text>
 
-            <Text>Currently logged in as: {currentUser?.email}</Text>
-            <Text>User Id: {currentUser?.uid}</Text>
+            {/* <Text>Currently logged in as: {currentUser?.email}</Text>
+            <Text>User Id: {currentUser?.uid}</Text> */}
 
             <View style={{ flexDirection:"row" }}>
 
-                {/* <TextInput
-                    style={styles.input}
-                    placeholder='Date'
-                    onChangeText={setDate}
-                    >
-                </TextInput>       */}
                 <TextInput
                     style={styles.input}
                     placeholder='Weight'
@@ -123,32 +112,41 @@ const ProgressPictures = () => {
                     >
                 </TextInput>
             </View>
-            {/* <Button onPress={() => saveToDatabase() } title='save' color='coral' />  */}
 
-            <Button title="Select Profile Picture" onPress={pickImage} />
-            {/* {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />} */}
+            <View style={{width: 200}} >
+              <Button title="Create Post" onPress={pickImage} color='#000000'/>
+            </View>
+
+            <View style={styles.space} />
 
             {workoutsDB.map((data) => {
               if(data.uid == currentUser?.uid)
               {
                 return(
-                  <View>
-                    <Text>
-                      {data.date.toString()}
-                    </Text>
-                    <Text>
-                      {data.weight}
-                    </Text>
-                    <Image source={{ uri: data.image }} style={{ width: 200, height: 200 }} />
+                  <View style={{alignItems: 'center'}}>
+                    <View style={{ alignItems: 'center', borderColor: 'black', borderWidth: 4 }}>
+                      <Text style={styles.textStyle}>
+                        {data.date.toDate().toDateString()}
+                      </Text>
+                      <Text style={styles.textStyle}>
+                        {data.weight}
+                      </Text>
+                      <Image source={{ uri: data.image }} style={{ width: 250, height: 250 }} />
 
+
+
+                      <View style={styles.space} />
+
+                    </View>
+                    <View style={{ width:200}} >
+                      <Button color='red' title="X" onPress={() => deletDoc(data.id)} />
+                    </View>
                   </View>
                 )
               }
             })}
         </View>
         </ScrollView>
-
-
     );
 }
 
@@ -156,9 +154,19 @@ const styles = StyleSheet.create
 ({
   input: {
     height: 40,
+    width: 240,
     margin: 12,
-    borderWidth: 1,
+    borderWidth: 4,
     padding: 10,
+    backgroundColor: 'white'
+  },
+  textStyle: {
+    fontWeight: 'bold',
+    justifyContent: 'center',
+  },
+  space: {
+    width: 20, 
+    height: 20,
   },
 });
 

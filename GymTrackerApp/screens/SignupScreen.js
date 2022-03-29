@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, TextInput, Alert  } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Alert, Image  } from 'react-native';
 // import * as React from 'react';
 import React, { useState, useEffect } from 'react'
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
@@ -8,6 +8,7 @@ function SignUpScreen({ navigation }) {
     const [email, setEmail] = useState('')
     const [passsword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const logo = '../pictures/GymTrackerLogo.png';
 
     // const [isSignedIn, setIsSignedIn] = useState(false);
 
@@ -96,22 +97,32 @@ function SignUpScreen({ navigation }) {
 
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Sign Up Screen</Text>
+
+        <Image source={require(logo)} style={{ width: 370, height: 100, resizeMode: 'contain' }}/>
+
+        <Text style={styles.textStyle}>Enter Email</Text>
 
         <TextInput
           style={styles.input}
           value={email}
           onChangeText={text => setEmail(text)}
           placeholder="Email"
+          textAlign={'center'}
+
         />
   
+        <Text style={styles.textStyle}>Enter Password</Text>
+
         <TextInput
           style={styles.input}
           value={passsword}
           onChangeText={text => setNewPassword(text)}
           placeholder="Password"
           secureTextEntry
+          textAlign={'center'}
         />
+
+        <Text style={styles.textStyle}>Confirm Password</Text>
 
         <TextInput
           style={styles.input}
@@ -119,13 +130,22 @@ function SignUpScreen({ navigation }) {
           onChangeText={text => setConfirmPassword(text)}
           placeholder="Confirm Password"
           secureTextEntry
+          textAlign={'center'}
         />
         
+        <View style={{width: 200}}>
+
         <Button
-          style={{marginBottom: 20}}
+          color='#000000'
+          style={{marginBottom: 20 }}
           title="Sign In"
           onPress={SignUpUser}
+          
         />
+        </View>
+
+        <View style={styles.bottom} />
+
   
       </View>
     );
@@ -139,12 +159,19 @@ function SignUpScreen({ navigation }) {
     alignItems: 'center',
     justifyContent: 'center',
   },
-
   input: {
     height: 40,
+    width: 240,
     margin: 12,
-    borderWidth: 1,
+    borderWidth: 4,
     padding: 10,
+  },
+  textStyle: {
+    fontWeight: 'bold',
+  },
+  bottom: {
+    width: 20, 
+    height: 100,
   },
 });
 

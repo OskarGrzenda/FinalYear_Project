@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity, Pressable, FlatList, Dimensions  } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity, Pressable, FlatList, Dimensions, ScrollView  } from 'react-native';
 import React, { useState, useEffect } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { db, useAuth, authentication } from "../Firebase";
@@ -64,55 +64,68 @@ function ExerciseScreen( { route }){
     })
   };
 
-  const deletDoc = async (exercise, weight, reps, sets, exerciseUID) =>
+  const deletDoc = async (exercise, weight, reps, sets, exerciseUID, object) =>
   {
     console.log(exercise);
+    console.log(exerciseUID);
+    console.log(object);
 
-    await updateDoc(doc(db, "WorkoutDay", id), {
-      exerciseArray: arrayRemove({ exercise: exercise, weight: weight, reps: reps, sets: sets, exerciseUID: exerciseUID}),
+    // await updateDoc(doc(db, "WorkoutDay", id, exerciseArray[object]), {
+    //   exerciseArray: arrayRemove({ exercise: exercise, weight: weight, reps: reps, sets: sets, exerciseUID: exerciseUID}),
     
-    })
+    // })
   }
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Exercises</Text>     
+    <ScrollView>
 
-      <Text>{id}</Text>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
+    <View style={styles.space} />
+
+      <Text style={styles.textStyle}>Enter Exercise Information</Text>     
+
+      {/* //The Id of the button that was just pressed */}
+      {/* <Text>{id}</Text> */}
 
       <TextInput
           style={styles.input}
           placeholder='Exercise Name'
           onChangeText={exerciseName}
+          textAlign={'center'}
         >
       </TextInput>
 
       <View style={{ flexDirection:"row" }}>
         <TextInput
-          style={styles.input}
+          style={styles.inputSmall}
           placeholder='Weight'
           onChangeText={exerciseWeight}
+          textAlign={'center'}
         >
         </TextInput>
         <TextInput
-          style={styles.input}
-          placeholder='Reps'
-          onChangeText={exerciseReps}
-        >
-        </TextInput>
-        <TextInput
-          style={styles.input}
+          style={styles.inputSmall}
           placeholder='Sets'
           onChangeText={exerciseSets}
+          textAlign={'center'}
+        >
+        </TextInput>
+        <TextInput
+          style={styles.inputSmall}
+          placeholder='Reps'
+          onChangeText={exerciseReps}
+          textAlign={'center'}
         >
         </TextInput>
       </View> 
 
       <View style={{ flexDirection:"row" }}>
-        <Button onPress={() => sendToDatabase() } title='save' color='coral' /> 
+        <Button onPress={() => sendToDatabase() } title='Add' color='#000000' /> 
       </View>
 
-      {/* data.exerciseArray[i].exercise, data.exerciseArray[i].weight, data.exerciseArray[i].reps, data.exerciseArray[i].sets, data.exerciseArray[i].exerciseUID */}
+      <View style={styles.space} />
+
       {workoutsDB.map((data) => {
         if(data.ubid == id) //[0].exercise
           {
@@ -126,19 +139,35 @@ function ExerciseScreen( { route }){
                   var tempItem=
                   (
                     <View>
-                      <Text>{object}</Text>
-                      <Text>{obj.exercise}</Text>
+                      <View style={{alignItems: 'center', flexDirection:"row"}}>
 
-                      <View style={{ flexDirection:"row" }}>
-                        <Text>{obj.weight}</Text>
-                        <Text>{obj.reps}</Text>
-                        <Text>{obj.sets}</Text>
-                      </View>
+                        <View style={{alignItems: 'center', borderColor: 'black', borderWidth: 4, width: 300}}>
+                          {/* <Text>{object}</Text> */}
+                          <Text style={{fontSize: 25, fontWeight: 'bold', color: '#ff6a00'}}>{obj.exercise}</Text>
 
-                      <Button title={'X'} color='red' onPress={() => deletDoc(obj.exercise, obj.weight, obj.reps, obj.sets, obj.exerciseUID) }></Button>
-                    
+                          <View style={{ flexDirection:"row", fontWeight: 'bold' }}>
+                            <Text style={styles.textStyleExercises}>{obj.weight}</Text>
+                            <View style={styles.spaceRow} />
+                            <Text style={styles.textStyleExercises}> x  {obj.sets}  x</Text>
+                            <View style={styles.spaceRow} />
+                            <Text style={styles.textStyleExercises}>{obj.reps}</Text>
+                          </View>
+
+                        </View> 
+
                       
-                    </View> 
+                        
+                        <View style={styles.space} />
+
+                        {/* {obj.exerciseUID} */}
+                        <View style={{width: 50}}>
+                          <Button  title='x' color='red' onPress={() => deletDoc(obj.exercise, obj.weight, obj.reps, obj.sets, obj.exerciseUID, object) }></Button> 
+                        </View>
+
+                      </View>
+                      <View style={styles.space} />
+
+                    </View>
                   );
                   output[i] = (tempItem);
                   i++;
@@ -149,7 +178,7 @@ function ExerciseScreen( { route }){
                   {output}
                   {/* <Text>{output.exerciseArray[0].exercise}</Text> */}
 
-                  <LineChart
+                  {/* <LineChart
                     data={{
                     labels: ['January', 'February', 'March', 'April', 'May', 'June'],
                     datasets: [{
@@ -180,13 +209,15 @@ function ExerciseScreen( { route }){
                     marginVertical: 8,
                     borderRadius: 16
                     }}
-                  />
+                  /> */}
                 </View>
               );
           }
       })}
 
     </View>
+    </ScrollView>
+
   );
 }
 
@@ -199,13 +230,38 @@ const styles = StyleSheet.create
     alignItems: 'center',
     justifyContent: 'center',
   },
-
   input: {
     height: 40,
-    margin: 12,
-    borderWidth: 2,
+    width: 240,
+    margin: 2,
+    borderWidth: 4,
     padding: 10,
     backgroundColor: 'white'
+  },
+  inputSmall: {
+    height: 40,
+    width: 77,
+    margin: 2,
+    borderWidth: 4,
+    padding: 10,
+    backgroundColor: 'white'
+  },
+  textStyle: {
+    fontWeight: 'bold',
+    justifyContent: 'center',
+  },
+  textStyleExercises: {
+    fontWeight: 'bold',
+    justifyContent: 'center',
+    fontSize: 20
+  },
+  space: {
+    width: 20, 
+    height: 20,
+  },
+  spaceRow: {
+    width: 5, 
+    height: 20,
   },
 });
 

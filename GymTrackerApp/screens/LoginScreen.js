@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, TextInput, Alert, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Alert, Pressable, Image } from 'react-native';
 import * as React from 'react';
 import { useState } from 'react';
 import { authentication } from '../Firebase';
@@ -10,6 +10,7 @@ function LogInScreen({ navigation }) {
   // const user = authentication.currentUser;
 
   const [forgotPasswordBoolean, setForgotPasswordBoolean] = useState(false);
+  const logo = '../pictures/GymTrackerLogo.png';
 
   // const [newPassword, setNewPassword] = useState('')
   // const [confirmNewPassword, setConfirmNewPassword] = useState('')
@@ -72,33 +73,20 @@ function LogInScreen({ navigation }) {
     .then(() => 
     {
       // Update successful.
-      Alert.alert
-      (
-        "New Password Set",
-        [
-          {
-            text: "Cancel",
-          },
-        ],
-      );
+      // Alert causes error
+      // Alert.alert
+      // (
+      //   "New Password Set",
+      //   [
+      //     {
+      //       text: "Cancel",
+      //     },
+      //   ],
+      // );
     }).catch((error) => 
     {
-      // An error ocurred
-      // ...
       console.log("Error");
     });
-    // setForgotPasswordBoolean(false);
-
-  }
-
-  const SignOutUser = ()=>{
-    signOut(authentication)
-    .then((re) =>{
-      setIsSignedIn(false);
-    })
-    .catch((err)=>{
-      console.log(err);
-    })
   }
 
   return (
@@ -106,45 +94,47 @@ function LogInScreen({ navigation }) {
 
 
        {forgotPasswordBoolean == true?
-        <View>
-          <TextInput
-          style={styles.input}
-          value={emailPassword}
-          onChangeText={text => setNewPasswordEmail(text)}
-          placeholder="Enter Account Email"
-            />
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}> 
 
-          {/* <TextInput
-          style={styles.input}
-          value={newPassword}
-          onChangeText={text => setNewPassword(text)}
-          placeholder="New Password"
-            />
+          <Image source={require(logo)} style={{ width: 370, height: 100, resizeMode: 'contain' }}/>
+
+          <Text style={styles.textStyle}>Enter account email</Text>
 
           <TextInput
-          style={styles.input}
-          value={confirmNewPassword}
-          onChangeText={text => setConfirmNewPassword(text)}
-          placeholder="Confirm new Password"
-            /> */}
+            style={styles.input}
+            value={emailPassword}
+            onChangeText={text => setNewPasswordEmail(text)}
+            placeholder="Enter Account Email"
+            textAlign={'center'}
+          />
 
-          <Button title="Send Reset Link" onPress={resetPassword}></Button>
-          <Button title="Back" onPress={setBooleanFalse}></Button>
+          <View style={{width: 200}}>
+            <Button color='#000000' title="Send Reset Link" onPress={resetPassword}></Button>
+            <View style={styles.space} />
+            <Button color='#000000' title="Back" onPress={setBooleanFalse}></Button>
+          </View>
 
+          <View style={styles.bottom} />
 
         </View>
 
          :
 
-         <View>
-            <Text>Enter Log In Details</Text>
+         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Image source={require(logo)} style={{ width: 370, height: 100, resizeMode: 'contain' }}/>
+
+
+            <Text style={styles.textStyle}>Enter Email</Text>
 
             <TextInput
               style={styles.input}
               value={email}
               onChangeText={text => setEmail(text)}
               placeholder="Email"
+              textAlign={'center'}
             />
+
+            <Text style={styles.textStyle}>Enter Password</Text>
 
             <TextInput
               style={styles.input}
@@ -152,21 +142,22 @@ function LogInScreen({ navigation }) {
               onChangeText={text => setPassword(text)}
               placeholder="Password"
               secureTextEntry
+              textAlign={'center'}
             />
 
             <Pressable onPress={setBooleanTrue}>
               <Text>Forgot Password?</Text>
             </Pressable>
 
-            <Button title="Sign In" onPress={LogInUser}></Button>
+            <View style={{width: 200}}>
+              <Button color='#000000' title="Sign In" onPress={LogInUser}></Button>
+            </View>
+
+            <View style={styles.bottom} />
 
           </View>
       }
 
-      {/* {isSignedIn === true? */}
-        {/* <Button title="Sign out" onPress={SignOutUser}></Button> */}
-        {/* // : */}
-       {/* } */}
     </View>
   );
 }
@@ -182,10 +173,22 @@ const styles = StyleSheet.create
 
   input: {
     height: 40,
+    width: 240,
     margin: 12,
-    borderWidth: 2,
+    borderWidth: 4,
     padding: 10,
     backgroundColor: 'white'
+  },
+  textStyle: {
+    fontWeight: 'bold',
+  },
+  space: {
+    width: 20, 
+    height: 20,
+  },
+  bottom: {
+    width: 20, 
+    height: 100,
   },
 });
 
