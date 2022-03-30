@@ -138,7 +138,7 @@ function SignUpScreen({ navigation }) {
         <Button
           color='#000000'
           style={{marginBottom: 20 }}
-          title="Sign In"
+          title="Sign Up"
           onPress={SignUpUser}
           
         />

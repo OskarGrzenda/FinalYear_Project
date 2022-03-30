@@ -150,7 +150,7 @@ function LogInScreen({ navigation }) {
             </Pressable>
 
             <View style={{width: 200}}>
-              <Button color='#000000' title="Sign In" onPress={LogInUser}></Button>
+              <Button color='#000000' title="Log In" onPress={LogInUser}></Button>
             </View>
 
             <View style={styles.bottom} />

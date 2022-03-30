@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TextInput, Button, Text, Image, Platform, ScrollView} from 'react-native';
+import { StyleSheet, View, TextInput, Button, Text, Image, Platform, ScrollView, Alert} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { db, useAuth, authentication } from "../Firebase";
-import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getStorage, getDownloadURL, deleteObject } from "firebase/storage";
 import { collection, doc, setDoc, deleteDoc, onSnapshot, updateDoc, deleteField, FieldValue, arrayUnion, arrayRemove, Timestamp } from 'firebase/firestore';
 
 const ProgressPictures = () => {
@@ -13,6 +13,7 @@ const ProgressPictures = () => {
     const storage = getStorage();
     const [workoutsDB, setWorkoutsDB] = useState([]);
     const [image, setImage] = useState(null);
+    const [showBox, setShowBox] = useState(true);
 
     // const [form, setForm] = useState({
     //   weight: "",
@@ -75,13 +76,14 @@ const ProgressPictures = () => {
             console.log("The Url " + x);
             //Set New Exercise Name & Add it to a new document in the collection 
             const randomProgressID = Math.random().toString();
-            var today = new Date().toString();
+            // var today = new Date().toString();
             
-             setDoc(doc(db, "ProgressInfo", today ), {
+             setDoc(doc(db, "ProgressInfo", randomProgressID ), {
               date: Timestamp.now().toDate(),
               weight: weight,
               uid: currentUser.uid,
               image: x,
+              imageid: randomCollection,
             })
           })
 
@@ -89,10 +91,51 @@ const ProgressPictures = () => {
         }
       };
 
-      const deletDoc = async (id) =>
+      const deletDoc = async (id, imageid) =>
       {
-        const docRef = doc(db, "ProgressInfo", id);
-        await deleteDoc(docRef);
+
+        return Alert.alert(
+          "Delete",
+          "Are you sure you want to delete your progress picture?",
+          [
+            // The "Yes" button
+            {
+              text: "Yes",
+              onPress: () => {
+                const docRef = doc(db, "ProgressInfo", id);
+                deleteDoc(docRef);
+
+
+                // {workoutsDB.map((data) => {
+                //   // Create a reference to the file to delete
+
+                //   if(currentUser?.uid == data.uid && id == data.date)
+                //   {
+                    const desertRef = ref(storage, currentUser?.uid + '/' + imageid ); 
+                    // Delete the file
+                    deleteObject(desertRef).then(() => {
+                      // File deleted successfully
+                    }).catch((error) => {
+                      // Uh-oh, an error occurred!
+                    });
+                  // }
+                // })}
+
+
+
+                setShowBox(false);
+              },
+            },
+            // The "No" button
+            // Does nothing but dismiss the dialog when tapped
+            {
+              text: "No",
+            },
+          ]
+        );
+
+        // const docRef = doc(db, "ProgressInfo", id);
+        // await deleteDoc(docRef);
       }
 
     return (
@@ -139,7 +182,7 @@ const ProgressPictures = () => {
 
                     </View>
                     <View style={{ width:200}} >
-                      <Button color='red' title="X" onPress={() => deletDoc(data.id)} />
+                      <Button color='red' title="X" onPress={() => deletDoc(data.id, data.imageid)} />
                     </View>
                   </View>
                 )

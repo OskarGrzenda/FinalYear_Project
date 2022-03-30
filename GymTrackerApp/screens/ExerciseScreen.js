@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity, Pressable, FlatList, Dimensions, ScrollView  } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity, Pressable, FlatList, Dimensions, ScrollView, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { db, useAuth, authentication } from "../Firebase";
@@ -18,6 +18,7 @@ function ExerciseScreen( { route }){
   const {id} = route.params;
     
   const [workoutsDB, setWorkoutsDB] = useState([]);
+  const [showBox, setShowBox] = useState(true);
 
   const [name, setName] = useState('');
   const [weight, setWeight] = useState('');
@@ -69,6 +70,28 @@ function ExerciseScreen( { route }){
     console.log(exercise);
     console.log(exerciseUID);
     console.log(object);
+
+    return Alert.alert(
+      "Delete",
+      "Are you sure you want to delete " + exercise + "?",
+      [
+        // The "Yes" button
+        {
+          text: "Yes",
+          onPress: () => {
+              updateDoc(doc(db, "WorkoutDay", id), {
+              exerciseArray: arrayRemove({ exercise: exercise, weight: weight, reps: reps, sets: sets, exerciseUID: exerciseUID}),
+            })
+            setShowBox(false);
+          },
+        },
+        // The "No" button
+        // Does nothing but dismiss the dialog when tapped
+        {
+          text: "No",
+        },
+      ]
+    );
 
     // await updateDoc(doc(db, "WorkoutDay", id, exerciseArray[object]), {
     //   exerciseArray: arrayRemove({ exercise: exercise, weight: weight, reps: reps, sets: sets, exerciseUID: exerciseUID}),

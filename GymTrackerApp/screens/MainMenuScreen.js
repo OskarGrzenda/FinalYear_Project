@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, FlatList, Button, ScrollView  } from 'react-native';
+import { StyleSheet, Text, View, Pressable, FlatList, Button, ScrollView, Alert  } from 'react-native';
 import React, { useState, useEffect } from 'react'
 import AddWorkout from '../components/addWorkout';
 import { db, useAuth, authentication } from "../Firebase";
@@ -9,6 +9,7 @@ import { signOut  } from "firebase/auth";
 
     const currentUser = useAuth();
     const [workoutsDB, setWorkoutsDB] = useState([]);
+    const [showBox, setShowBox] = useState(true);
 
     useEffect (() => {
       const realtime = onSnapshot(collection(db, "WorkoutDay"), (snapshot) => {
@@ -36,10 +37,29 @@ import { signOut  } from "firebase/auth";
     navigation.navigate('ExerciseScreen', {id})
   }
 
-  const deletDoc = async (id) =>
+  const deletDoc = async (id, name) =>
   {
-    const docRef = doc(db, "WorkoutDay", id);
-    await deleteDoc(docRef);
+    return Alert.alert(
+      "Delete",
+      "Are you sure you want to delete " + name + "?",
+      [
+        // The "Yes" button
+        {
+          text: "Yes",
+          onPress: () => {
+            const docRef = doc(db, "WorkoutDay", id);
+            deleteDoc(docRef);
+            setShowBox(false);
+          },
+        },
+        // The "No" button
+        // Does nothing but dismiss the dialog when tapped
+        {
+          text: "No",
+        },
+      ]
+    );
+
   }
   
   return (
@@ -75,7 +95,7 @@ import { signOut  } from "firebase/auth";
                         </View>
                         <View style={styles.space} />
                         <View style={{padding:10}}>
-                          <Button title={'X'} color='red' onPress={() => deletDoc(data.id) }></Button>
+                          <Button title={'X'} color='red' onPress={() => deletDoc(data.id, data.name) }></Button>
                         </View>
 
                     </View>
