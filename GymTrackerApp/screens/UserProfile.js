@@ -13,13 +13,14 @@ const UserProfile = ({navigation}) => {
     const storage = getStorage();
 
     const [image, setImage] = useState(null);
-    const [newEmail, setEmail] = useState(null);
+    // const [newEmail, setEmail] = useState(null);
     const basicImage = '../pictures/profilePicture.png';
     const [profilePictureBoolean, setProfilePictureBoolean] = useState(true);
     const booleanCheck = true;
     const [workoutsDB, setWorkoutsDB] = useState([]);
     const [workoutsDB2, setWorkoutsDB2] = useState([]);
     const [progressInfoDB, setProgressInfoDB] = useState([]);
+    const [exerciseDB, setExerciseDB] = useState([]);
 
 
     const [showBox, setShowBox] = useState(true);
@@ -47,6 +48,14 @@ const UserProfile = ({navigation}) => {
       return realtime;
     }, []);
 
+    //Refrence to exercise database 
+    useEffect (() => {
+      const realtime = onSnapshot(collection(db, "ExercisesDB"), (snapshot) => {
+        setExerciseDB(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      });
+      return realtime;
+    }, []);
+
     //Save image to storage
     const pickImage = async () => {
         console.log("Picking Image");
@@ -54,7 +63,7 @@ const UserProfile = ({navigation}) => {
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.All,
           allowsEditing: true,
-          aspect: [4, 3],
+          aspect: [1, 1],
           quality: 1,
         });
     
@@ -91,39 +100,39 @@ const UserProfile = ({navigation}) => {
         }
       };
 
-      const changeEmail = async () => {
-        updateEmail(authentication.currentUser, newEmail)
-        .then(() => {
-          sendEmailVerification(authentication.currentUser)
-          .then(() => {
-            navigation.navigate('LoginScreen');
-            Alert.alert
-            (
-              "Email sent to new email",
-              "Verify your email to be able to log in again!",
-              [
-                {
-                  text: "Cancel",
-                },
-              ],
-            );  
+      // const changeEmail = async () => {
+      //   updateEmail(authentication.currentUser, newEmail)
+      //   .then(() => {
+      //     sendEmailVerification(authentication.currentUser)
+      //     .then(() => {
+      //       navigation.navigate('LoginScreen');
+      //       Alert.alert
+      //       (
+      //         "Email sent to new email",
+      //         "Verify your email to be able to log in again!",
+      //         [
+      //           {
+      //             text: "Cancel",
+      //           },
+      //         ],
+      //       );  
 
-          });
-        })
-        .catch((error) => {
-          Alert.alert
-          (
-            "Error",
-            "New email invalid or in use",
-            [
-              {
-                text: "Cancel",
-              },
-            ],
-          );        
-          });
+      //     });
+      //   })
+      //   .catch((error) => {
+      //     Alert.alert
+      //     (
+      //       "Error",
+      //       "New email invalid or in use",
+      //       [
+      //         {
+      //           text: "Cancel",
+      //         },
+      //       ],
+      //     );        
+      //     });
 
-      };
+      // };
 
       const deleteAccount = async () => {
 
@@ -166,6 +175,14 @@ const UserProfile = ({navigation}) => {
                       const profilePictureRef = ref(storage, "profilePictures/" + currentUser?.uid); 
                       // Delete the file
                       deleteObject(profilePictureRef);
+                    }
+                  })}
+
+                  {exerciseDB.map((data) => {
+                    if(data.uid == currentUser?.uid)
+                    {
+                      const docRef = doc(db, "ExercisesDB", data.id);
+                      deleteDoc(docRef);
                     }
                   })}
 
@@ -267,6 +284,7 @@ const UserProfile = ({navigation}) => {
                   }
                 })}
 
+            <View style={styles.space} />
 
             <Button color='#000000' title="Change Profile Picture" onPress={pickImage} />
 
@@ -275,7 +293,7 @@ const UserProfile = ({navigation}) => {
             {/* <Text>Email: {currentUser?.email}</Text>
             <Text>User Id: {currentUser?.uid}</Text> */}
 
-            <View style={{borderColor: 'black', borderWidth: 4, alignItems: 'center' }}>
+            {/* <View style={{borderColor: 'black', borderWidth: 4, alignItems: 'center' }}>
               <Text style={styles.textStyle}>Current Email</Text>
               <Text style={styles.textStyle}>{currentUser?.email}</Text>
               <Text style={styles.textStyle}>Enter your new email</Text>
@@ -291,12 +309,16 @@ const UserProfile = ({navigation}) => {
 
             <View style={{width: 200}}>
               <Button color='#000000' title="Update Email" onPress={() => changeEmail() } />
+            </View> */}
+
+            <View style={{width: 200}}>
+              <Button title="Update Email" color='black' onPress={() => navigation.navigate('UpdateEmail')}/>
             </View>
 
             <View style={styles.space} />
 
             <View style={{width: 200}}>
-              <Button title="Sign out" onPress={SignOutUser}></Button>
+              <Button color='black' title="Sign out" onPress={SignOutUser}></Button>
             </View>
 
             <View style={styles.space} />

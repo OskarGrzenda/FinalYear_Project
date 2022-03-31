@@ -24,6 +24,8 @@ function ExerciseScreen( { route }){
   const [weight, setWeight] = useState('');
   const [reps, setReps] = useState('');
   const [sets, setSets] = useState('');
+  const currentUser = useAuth();
+
 
   const exerciseName = (val) => {
     setName(val)
@@ -42,7 +44,7 @@ function ExerciseScreen( { route }){
   } 
 
   useEffect (() => {
-    const realtime = onSnapshot(collection(db, "WorkoutDay"), (snapshot) => {
+    const realtime = onSnapshot(collection(db, "ExercisesDB"), (snapshot) => {
       setWorkoutsDB(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     });
     return realtime;
@@ -50,27 +52,23 @@ function ExerciseScreen( { route }){
 
   const sendToDatabase = async () => 
   {
+    console.log("Setting data base");
     const randomExerciseID = Math.random().toString();
 
-    await updateDoc(doc(db, "WorkoutDay", id), {
-
-      exerciseArray: arrayUnion({
+    await setDoc(doc(db, "ExercisesDB", randomExerciseID), {
         exercise: name,
         weight: weight,
         reps: reps,
         sets: sets,
         exerciseUID: randomExerciseID,
-      })
-
+        buttonID: id,
+        uid: currentUser?.uid
     })
+
   };
 
-  const deletDoc = async (exercise, weight, reps, sets, exerciseUID, object) =>
+  const deletDoc = async (deleteById, exercise) =>
   {
-    console.log(exercise);
-    console.log(exerciseUID);
-    console.log(object);
-
     return Alert.alert(
       "Delete",
       "Are you sure you want to delete " + exercise + "?",
@@ -79,9 +77,8 @@ function ExerciseScreen( { route }){
         {
           text: "Yes",
           onPress: () => {
-              updateDoc(doc(db, "WorkoutDay", id), {
-              exerciseArray: arrayRemove({ exercise: exercise, weight: weight, reps: reps, sets: sets, exerciseUID: exerciseUID}),
-            })
+            const docRef = doc(db, "ExercisesDB", deleteById);
+            deleteDoc(docRef);
             setShowBox(false);
           },
         },
@@ -150,91 +147,39 @@ function ExerciseScreen( { route }){
       <View style={styles.space} />
 
       {workoutsDB.map((data) => {
-        if(data.ubid == id) //[0].exercise
+        if(data.buttonID == id && currentUser?.uid == data.uid) //[0].exercise
           {
-              var output=[];
-              var i = 0;
-              var obj;
-                for(var object in data.exerciseArray)//var i = 0; i < data.exerciseArray.length; i++
-                {
-                  // console.log(i);
-                  obj = data.exerciseArray[object];
-                  var tempItem=
-                  (
-                    <View>
-                      <View style={{alignItems: 'center', flexDirection:"row"}}>
+            return(
+              <View>
+                <View style={{alignItems: 'center', flexDirection:"row"}}>
 
-                        <View style={{alignItems: 'center', borderColor: 'black', borderWidth: 4, width: 300}}>
-                          {/* <Text>{object}</Text> */}
-                          <Text style={{fontSize: 25, fontWeight: 'bold', color: '#ff6a00'}}>{obj.exercise}</Text>
+                  <View style={{alignItems: 'center', borderColor: 'black', borderWidth: 4, width: 300}}>
+                    {/* <Text>{object}</Text> */}
+                    <Text style={{fontSize: 25, fontWeight: 'bold', color: '#ff6a00'}}>{data.exercise}</Text>
 
-                          <View style={{ flexDirection:"row", fontWeight: 'bold' }}>
-                            <Text style={styles.textStyleExercises}>{obj.weight}</Text>
-                            <View style={styles.spaceRow} />
-                            <Text style={styles.textStyleExercises}> x  {obj.sets}  x</Text>
-                            <View style={styles.spaceRow} />
-                            <Text style={styles.textStyleExercises}>{obj.reps}</Text>
-                          </View>
-
-                        </View> 
-
-                      
-                        
-                        <View style={styles.space} />
-
-                        {/* {obj.exerciseUID} */}
-                        <View style={{width: 50}}>
-                          <Button  title='x' color='red' onPress={() => deletDoc(obj.exercise, obj.weight, obj.reps, obj.sets, obj.exerciseUID, object) }></Button> 
-                        </View>
-
-                      </View>
-                      <View style={styles.space} />
-
+                    <View style={{ flexDirection:"row", fontWeight: 'bold' }}>
+                      <Text style={styles.textStyleExercises}>{data.weight}</Text>
+                      <View style={styles.spaceRow} />
+                      <Text style={styles.textStyleExercises}> x  {data.sets}  x</Text>
+                      <View style={styles.spaceRow} />
+                      <Text style={styles.textStyleExercises}>{data.reps}</Text>
                     </View>
-                  );
-                  output[i] = (tempItem);
-                  i++;
-                }
 
-              return (
-                <View key={data.id} >
-                  {output}
-                  {/* <Text>{output.exerciseArray[0].exercise}</Text> */}
+                  </View> 
+                  
+                  <View style={styles.space} />
 
-                  {/* <LineChart
-                    data={{
-                    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-                    datasets: [{
-                        data: [
-                        Math.random() * 100,
-                        Math.random() * 100,
-                        Math.random() * 100,
-                        Math.random() * 100,
-                        Math.random() * 100,
-                        Math.random() * 100
-                        ]
-                    }]
-                    }}
-                    width={Dimensions.get('window').width} // from react-native
-                    height={220}
-                    chartConfig={{
-                    backgroundColor: '#e26a00',
-                    backgroundGradientFrom: '#fb8c00',
-                    backgroundGradientTo: '#ffa726',
-                    decimalPlaces: 2, // optional, defaults to 2dp
-                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                    style: {
-                        borderRadius: 16
-                    }
-                    }}
-                    bezier
-                    style={{
-                    marginVertical: 8,
-                    borderRadius: 16
-                    }}
-                  /> */}
+                  {/* {obj.exerciseUID} */}
+                  <View style={{width: 50}}>
+                    <Button  title='x' color='red' onPress={() => deletDoc(data.id, data.exercise) }></Button> 
+                  </View>
+
                 </View>
-              );
+                <View style={styles.space} />
+
+              </View>
+            )
+
           }
       })}
 

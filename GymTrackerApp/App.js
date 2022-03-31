@@ -8,6 +8,8 @@ import MainMenuScreen from './screens/MainMenuScreen';
 import ExerciseScreen from './screens/ExerciseScreen';
 import UserProfile from './screens/UserProfile';
 import ProgressPictures from './screens/ProgressPictures';
+import Steps from './screens/Steps';
+import UpdateEmail from './screens/UpdateEmail';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -46,6 +48,8 @@ function App() {
         <Stack.Screen name="ExerciseScreen" component={ExerciseScreen} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
         <Stack.Screen name="ProgressPictures" component={ProgressPictures} />
+        <Stack.Screen name="Steps" component={Steps} />
+        <Stack.Screen name="UpdateEmail" component={UpdateEmail} />
 
       </Stack.Navigator>
     </NavigationContainer>

@@ -51,7 +51,7 @@ const ProgressPictures = () => {
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.All,
           allowsEditing: true,
-          aspect: [4, 3],
+          aspect: [1, 1],
           quality: 1,
         });
     
@@ -75,10 +75,10 @@ const ProgressPictures = () => {
             // setImage(x);
             console.log("The Url " + x);
             //Set New Exercise Name & Add it to a new document in the collection 
-            const randomProgressID = Math.random().toString();
-            // var today = new Date().toString();
+            // const randomProgressID = Math.random().toString();
+            var today = new Date().toString();
             
-             setDoc(doc(db, "ProgressInfo", randomProgressID ), {
+             setDoc(doc(db, "ProgressInfo", today ), {
               date: Timestamp.now().toDate(),
               weight: weight,
               uid: currentUser.uid,
@@ -141,7 +141,9 @@ const ProgressPictures = () => {
     return (
       <ScrollView>
         <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={styles.textStyle}>Progress Pictures</Text>
+            <View style={styles.space} />
+
+            {/* <Text style={styles.textStyleMain}>Progress Pictures</Text> */}
 
             {/* <Text>Currently logged in as: {currentUser?.email}</Text>
             <Text>User Id: {currentUser?.uid}</Text> */}
@@ -152,10 +154,11 @@ const ProgressPictures = () => {
                     style={styles.input}
                     placeholder='Weight'
                     onChangeText={setWeight}
+                    textAlign={'center'}
                     >
                 </TextInput>
             </View>
-
+            {/* .toDate().toDateString() */}
             <View style={{width: 200}} >
               <Button title="Create Post" onPress={pickImage} color='#000000'/>
             </View>
@@ -169,21 +172,21 @@ const ProgressPictures = () => {
                   <View style={{alignItems: 'center'}}>
                     <View style={{ alignItems: 'center', borderColor: 'black', borderWidth: 4 }}>
                       <Text style={styles.textStyle}>
-                        {data.date.toDate().toDateString()}
+                        {data.date.toDate().toDateString()} 
                       </Text>
                       <Text style={styles.textStyle}>
                         {data.weight}
                       </Text>
                       <Image source={{ uri: data.image }} style={{ width: 250, height: 250 }} />
 
-
-
                       <View style={styles.space} />
 
                     </View>
-                    <View style={{ width:200}} >
-                      <Button color='red' title="X" onPress={() => deletDoc(data.id, data.imageid)} />
+                    <View style={{ width:80}} >
+                      <Button color='red' title="Delete" onPress={() => deletDoc(data.id, data.imageid)} />
                     </View>
+                    <View style={styles.space} />
+
                   </View>
                 )
               }
@@ -206,6 +209,26 @@ const styles = StyleSheet.create
   textStyle: {
     fontWeight: 'bold',
     justifyContent: 'center',
+    backgroundColor: "black",
+    color: "white",
+    width : 250,
+    textAlign: 'center',  
+    fontSize: 15,
+
+
+  },
+  textStyleMain: {
+    justifyContent: 'center',
+    backgroundColor: "rgb(255, 106, 0)",
+    height: 36,
+    width : 300,
+    borderColor: "black",
+    borderWidth: 4,
+    borderRadius: 20,
+    color: "white",
+    fontWeight: "bold",   
+    textAlign: 'center',  
+    fontSize: 25,
   },
   space: {
     width: 20, 

@@ -10,10 +10,19 @@ import { signOut  } from "firebase/auth";
     const currentUser = useAuth();
     const [workoutsDB, setWorkoutsDB] = useState([]);
     const [showBox, setShowBox] = useState(true);
+    const [exerciseDB, setExerciseDB] = useState([]);
 
     useEffect (() => {
       const realtime = onSnapshot(collection(db, "WorkoutDay"), (snapshot) => {
         setWorkoutsDB(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      });
+      return realtime;
+    }, []);
+
+    //Refrence to exercise database 
+    useEffect (() => {
+      const realtime = onSnapshot(collection(db, "ExercisesDB"), (snapshot) => {
+        setExerciseDB(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
       });
       return realtime;
     }, []);
@@ -26,7 +35,7 @@ import { signOut  } from "firebase/auth";
       name: text,
       uid: uid,
       ubid: randomCollection,
-      exerciseArray: [],
+      // exerciseArray: [],
       date: Timestamp.now().toDate(),
 
     })
@@ -49,6 +58,14 @@ import { signOut  } from "firebase/auth";
           onPress: () => {
             const docRef = doc(db, "WorkoutDay", id);
             deleteDoc(docRef);
+            {exerciseDB.map((data) => {
+              if(data.uid == currentUser?.uid && id == data.buttonID)
+              {
+                const docRef = doc(db, "ExercisesDB", data.id);
+                deleteDoc(docRef);
+              }
+            })}
+
             setShowBox(false);
           },
         },
@@ -59,8 +76,17 @@ import { signOut  } from "firebase/auth";
         },
       ]
     );
-
   }
+
+  // const setStepsDB = async () =>
+  // {
+  //   setDoc(doc(db, "Steps", currentUser?.uid ), {
+  //     totalSteps: "0",
+  //     uid: currentUser?.uid,
+  //   })
+  // }
+
+  // , setStepsDB()
   
   return (
       <View style={styles.mainView}>
@@ -70,11 +96,14 @@ import { signOut  } from "firebase/auth";
       <Text>User Id: {currentUser?.uid}</Text> */}
 
         <View style={{ flexDirection:"row"}} >
-          <View style={{ width:196}}>
-            <Button color= '#000000' title="Profile Page" onPress={() => navigation.navigate('UserProfile')}/>
+          <View style={{ width:131}}>
+            <Button color= '#000000' title="Profile" onPress={() => navigation.navigate('UserProfile')}/>
           </View>
-          <View style={{ width:196}}>
-            <Button title="Progress Pictures" onPress={() => navigation.navigate('ProgressPictures')} color='#000000'/>
+          <View style={{ width:131}}>
+            <Button title="Pictures" onPress={() => navigation.navigate('ProgressPictures')} color='#000000'/>
+          </View>
+          <View style={{ width:131}}>
+            <Button title="Steps" onPress={() => {navigation.navigate('Steps') }} color='#000000'/> 
           </View>
         </View>
 
@@ -88,17 +117,33 @@ import { signOut  } from "firebase/auth";
             if(data.uid == currentUser?.uid)
               {
                 return (
+                  <View>
+
+                    <View style={{width: '100%', borderBottomColor: 'black', borderBottomWidth: 1,}}>
+                    </View>
+                    
 
                     <View style={{ flexDirection:"row", justifyContent: 'center' }} key={data.id} >
                         <View style={{width: 200, padding:10}} >
                           <Button onPress={() => openWorkout(data.id) } title={data.name}  color='#ff6a00'/> 
                         </View>
+
                         <View style={styles.space} />
+
                         <View style={{padding:10}}>
                           <Button title={'X'} color='red' onPress={() => deletDoc(data.id, data.name) }></Button>
                         </View>
 
                     </View>
+
+
+
+                    <View style={{width: '100%', borderBottomColor: 'black', borderBottomWidth: 1,}}>
+                    </View>
+
+                    <View style={styles.space} />
+
+                  </View>
                 );
               }
           })}
@@ -118,8 +163,7 @@ const styles = StyleSheet.create
     alignItems: "center",
     backgroundColor: "#DDDDDD",
     padding: 10,
-    justifyContent: 'center' 
-
+    justifyContent: 'center'
   },
   space: {
     width: 20, 
@@ -127,7 +171,7 @@ const styles = StyleSheet.create
   },
   textStyle: {
     fontWeight: 'bold',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   mainView:{
     flex: 1, 

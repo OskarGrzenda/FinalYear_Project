@@ -12,7 +12,7 @@ export default function AddWorkout( {sendData} ) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
-            <Text style={styles.textStyle}>Enter Workout Name</Text>
+            {/* <Text style={styles.textStyle}>Enter Workout Name</Text> */}
 
             <TextInput
                 style={styles.input}
@@ -21,8 +21,8 @@ export default function AddWorkout( {sendData} ) {
                 textAlign={'center'}
             >
             </TextInput>
-            <View style={{width: 200}}>
-                <Button onPress={() => sendData(text, currentUser.uid) } title='add workout' color='#000000' /> 
+            <View style={{width: 80}}>
+                <Button onPress={() => sendData(text, currentUser.uid) } title='add' color='#000000' /> 
             </View>
         </View>
     )
@@ -37,7 +37,17 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
       },
       textStyle: {
-        fontWeight: 'bold',
         justifyContent: 'center',
+        backgroundColor: "rgb(255, 106, 0)",
+        height: 36,
+        width : 300,
+        borderColor: "black",
+        borderWidth: 4,
+        borderRadius: 20,
+        color: "white",
+        fontWeight: "bold",   
+        textAlign: 'center',  
+        fontSize: 25,
+        overflow: "hidden",
       },
 })
