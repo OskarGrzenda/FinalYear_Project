@@ -1,59 +1,60 @@
-import { StyleSheet, Text, View, Pressable, FlatList, Button, ScrollView, Alert  } from 'react-native';
+import { StyleSheet, View, Button, ScrollView, Alert  } from 'react-native';
 import React, { useState, useEffect } from 'react'
 import AddWorkout from '../components/addWorkout';
-import { db, useAuth, authentication } from "../Firebase";
+import { db, useAuth } from "../Firebase";
 import { collection, doc, setDoc, deleteDoc, onSnapshot, Timestamp } from 'firebase/firestore';
-import { signOut  } from "firebase/auth";
-import NavigationTabs from '../components/NavigationTabs';
 
-  const MainMenuScreen = ({navigation}) => {
+const MainMenuScreen = ({navigation}) => {
 
-    const currentUser = useAuth();
-    const [workoutsDB, setWorkoutsDB] = useState([]);
-    const [showBox, setShowBox] = useState(true);
-    const [exerciseDB, setExerciseDB] = useState([]);
+  const currentUser = useAuth();
+  const [workoutsDB, setWorkoutsDB] = useState([]);
+  const [showBox, setShowBox] = useState(true);
+  const [exerciseDB, setExerciseDB] = useState([]);
 
-    useEffect (() => {
-      const realtime = onSnapshot(collection(db, "WorkoutDay"), (snapshot) => {
-        setWorkoutsDB(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      });
-      return realtime;
-    }, []);
+  // UseEffect function gets access to the WorkoutDay collection from firestore
+  // Listens to real-time updates to return data in real-time
+  useEffect (() => {
+    const realtime = onSnapshot(collection(db, "WorkoutDay"), (snapshot) => {
+      setWorkoutsDB(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    });
+    return realtime;
+  }, []);
 
-    //Refrence to exercise database 
-    useEffect (() => {
-      const realtime = onSnapshot(collection(db, "ExercisesDB"), (snapshot) => {
-        setExerciseDB(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      });
-      return realtime;
-    }, []);
+  // UseEffect function gets access to the ExercisesDB collection from firestore
+  // Listens to real-time updates to return data in real-time
+  useEffect (() => {
+    const realtime = onSnapshot(collection(db, "ExercisesDB"), (snapshot) => {
+      setExerciseDB(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    });
+    return realtime;
+  }, []);
 
+  // Functions that add a new workout day to the collection called WorkoutDay
   const addWorkouts = async (text, uid) => 
   {
-    //Set New Exercise Name & Add it to a new document in the collection 
     const randomCollection = Math.random().toString();
     await setDoc(doc(db, "WorkoutDay", randomCollection ), {
       name: text,
       uid: uid,
       ubid: randomCollection,
-      // exerciseArray: [],
       date: Timestamp.now().toDate(),
-
     })
   };
 
+  // Function that gets the current ID of the button and passes button ID to ExerciseScreen
   const openWorkout = (id) => 
   { 
     navigation.navigate('ExerciseScreen', {id})
   }
 
+  // Function to delete the current workout day selected and the workouts data
   const deletDoc = async (id, name) =>
   {
     return Alert.alert(
       "Delete",
       "Are you sure you want to delete " + name + "?",
       [
-        // The "Yes" button
+        // Alert box to confirm deletion YES will confirm and delete the data
         {
           text: "Yes",
           onPress: () => {
@@ -70,43 +71,18 @@ import NavigationTabs from '../components/NavigationTabs';
             setShowBox(false);
           },
         },
-        // The "No" button
-        // Does nothing but dismiss the dialog when tapped
+        // No does nothing and closes the alert
         {
           text: "No",
         },
       ]
     );
   }
-
-  // const setStepsDB = async () =>
-  // {
-  //   setDoc(doc(db, "Steps", currentUser?.uid ), {
-  //     totalSteps: "0",
-  //     uid: currentUser?.uid,
-  //   })
-  // }
-
-  // , setStepsDB()
   
+  // Returns all the GUI components for the Main Menu Screen
   return (
       <View style={styles.mainView}>
       <ScrollView>
-
-      {/* <Text>Currently logged in as: {currentUser?.email}</Text>
-      <Text>User Id: {currentUser?.uid}</Text> */}
-
-        {/* <View style={{ flexDirection:"row"}} >
-          <View style={{ width:131}}>
-            <Button color= '#000000' title="Profile" onPress={() => navigation.navigate('UserProfile')}/>
-          </View>
-          <View style={{ width:131}}>
-            <Button title="Pictures" onPress={() => navigation.navigate('ProgressPictures')} color='#000000'/>
-          </View>
-          <View style={{ width:131}}>
-            <Button title="Steps" onPress={() => {navigation.navigate('Steps') }} color='#000000'/> 
-          </View>
-        </View> */}
 
         <View style={styles.space} />
 
@@ -119,14 +95,11 @@ import NavigationTabs from '../components/NavigationTabs';
               {
                 return (
                   <View>
-
-                    <View style={{width: 390, borderBottomColor: 'black', borderBottomWidth: 1,}}>
-                    </View>
+                    <View style={{width: 390, borderBottomColor: 'black', borderBottomWidth: 1,}}/>
                     
-
                     <View style={{ flexDirection:"row", justifyContent: 'center' }} key={data.id} >
                         <View style={{width: 200, padding:10}} >
-                          <Button onPress={() => openWorkout(data.id) } title={data.name}  color='#ff6a00'/> 
+                          <Button onPress={() => openWorkout(data.id) } title={data.name}  color='grey'/> 
                         </View>
 
                         <View style={styles.space} />
@@ -134,31 +107,20 @@ import NavigationTabs from '../components/NavigationTabs';
                         <View style={{padding:10}}>
                           <Button title={'X'} color='red' onPress={() => deletDoc(data.id, data.name) }></Button>
                         </View>
-
                     </View>
 
-
-
-                    <View style={{width: 390, borderBottomColor: 'black', borderBottomWidth: 1,}}>
-                    </View>
+                    <View style={{width: 390, borderBottomColor: 'black', borderBottomWidth: 1,}}/>
 
                     <View style={styles.space} />
-
                   </View>
                 );
               }
           })}
-
           <View style={styles.space} />
-
-
-          {/* <NavigationTabs></NavigationTabs> */}
 
        </ScrollView>
 
       </View>
-
-      
     );
   }
 

@@ -2,47 +2,39 @@ import { StyleSheet, Text, View, Button, TextInput, Alert, Pressable, Image } fr
 import * as React from 'react';
 import { useState } from 'react';
 import { authentication } from '../Firebase';
-import { signInWithEmailAndPassword, signOut, updatePassword, sendPasswordResetEmail } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 
 function LogInScreen({ navigation }) {
+
   const [email, setEmail] = useState('')
   const [passsword, setPassword] = useState('')
-  // const user = authentication.currentUser;
-
   const [forgotPasswordBoolean, setForgotPasswordBoolean] = useState(false);
   const logo = '../pictures/GymTrackerLogo.png';
-
-  // const [newPassword, setNewPassword] = useState('')
-  // const [confirmNewPassword, setConfirmNewPassword] = useState('')
   const [emailPassword, setNewPasswordEmail] = useState('')
-  // const user = emailPassword;
 
-
+  // Function that checks is if user exists
+  // Makes sure that user has a verified email otherwise they can't log in
   const LogInUser = ()=>{
-
     signInWithEmailAndPassword(authentication, email, passsword)
-
     .then((re) =>{
-      // setIsSignedIn(true);
-      // console.log(authentication.currentUser.emailVerified);
-      // if(authentication.currentUser.emailVerified == true)
-      // {
+      console.log(authentication.currentUser.emailVerified);
+      if(authentication.currentUser.emailVerified == true)
+      {
         navigation.navigate('Tabs');
-      // }
-      // else
-      // {
-      //   Alert.alert
-      //   (
-      //     "Error",
-      //     "Email has not been verified!",
-      //     [
-      //       {
-      //         text: "Cancel",
-      //       },
-      //     ],
-      //   );
-      // }
-      // navigation.navigate('MainMenuScreen')
+      }
+      else
+      {
+        Alert.alert
+        (
+          "Error",
+          "Email has not been verified!",
+          [
+            {
+              text: "Cancel",
+            },
+          ],
+        );
+      }
 
     })
     .catch((err)=>{
@@ -60,38 +52,28 @@ function LogInScreen({ navigation }) {
     })
   }
 
+  // Sets boolean True and open forgot password functionality
   const setBooleanTrue = () => {
     setForgotPasswordBoolean(true);
   }
-
+  // Sets boolean False and close forgot password functionality
   const setBooleanFalse = () => {
     setForgotPasswordBoolean(false);
   }
-
+  // Function that sends a password reset email to the email entered
   const resetPassword = () => {
     sendPasswordResetEmail(authentication, emailPassword)
     .then(() => 
     {
-      // Update successful.
-      // Alert causes error
-      // Alert.alert
-      // (
-      //   "New Password Set",
-      //   [
-      //     {
-      //       text: "Cancel",
-      //     },
-      //   ],
-      // );
+      console.log("Successful!");
     }).catch((error) => 
     {
       console.log("Error");
     });
   }
-
+  // Returns all the GUI components of the Log in screen
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-
 
        {forgotPasswordBoolean == true?
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}> 
@@ -122,7 +104,6 @@ function LogInScreen({ navigation }) {
 
          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Image source={require(logo)} style={{ width: 370, height: 100, resizeMode: 'contain' }}/>
-
 
             <Text style={styles.textStyle}>Enter Email</Text>
 
@@ -157,7 +138,6 @@ function LogInScreen({ navigation }) {
 
           </View>
       }
-
     </View>
   );
 }

@@ -1,94 +1,64 @@
-import { StyleSheet, Text, View, Button, TextInput, Alert, Pressable, Image, Dimensions } from 'react-native';
-
+import { StyleSheet, Text, View, Button } from 'react-native';
 import React, { useEffect, useState } from "react";
-import { StatusBar } from "expo-status-bar";
 import { Pedometer } from "expo-sensors";
 import CircularProgress from "react-native-circular-progress-indicator";
-
-import { collection, doc, setDoc, deleteDoc, onSnapshot, Timestamp, updateDoc } from 'firebase/firestore';
-import { db, useAuth, authentication } from "../Firebase";
+import { collection, doc, setDoc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { db, useAuth } from "../Firebase";
 
 function Steps() {
 
-    const [StepCount, SetStepCount] = useState(0);
-    const [workoutsDB, setWorkoutsDB] = useState([]);
+  const [workoutsDB, setWorkoutsDB] = useState([]);
+  var stepsCounter = 0;
+  const currentUser = useAuth();
 
-    // var previousSteps = 0;
-    // var resetSteps = 0;
-
-   //On average 1312.34 steps per 1km
-    // var DistanceCalc = StepCount / 1312.34;
-    // var TotalDistance = DistanceCalc.toFixed(2);
-
-    const [resetSteps, SetResetStepCount] = useState(0);
-    const [previousSteps, SetPreviousStepCount] = useState(0);
-    var stepsCounter = 0;
-      
-    const currentUser = useAuth();
-
-    useEffect (() => {
-        const realtime = onSnapshot(collection(db, "Steps"), (snapshot) => {
-          setWorkoutsDB(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-        });
-        return realtime;
-    }, []);
-
-    useEffect(() => {
-        watchSteps();
-    }, []);
-   
-    const watchSteps = async () =>
-    {
-
-      Pedometer.watchStepCount((result) => 
-      {
-        // SetPreviousStepCount(result.steps);
-        // SetStepCount(result.steps);
-
-        stepsCounter = result.steps;
-        // result.steps = result.steps - resetSteps;
-        // var newStepsCounter = result.steps;
-        // console.log("StepCounter " + stepsCounter);
-        // console.log("Temp " +newSteps);
-        UpdateStepsInDatabase(stepsCounter);
-
+  // UseEffect function gets access to the Steps collection from firestore
+  // Listens to real-time updates to return data in real-time
+  useEffect (() => {
+      const realtime = onSnapshot(collection(db, "Steps"), (snapshot) => {
+        setWorkoutsDB(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
       });
-    };
+      return realtime;
+  }, []);
 
-    const UpdateStepsInDatabase = async (stepsCounter) =>
+  // Everytime a change occurs in the file watchSteps() gets called and updates the steps
+  useEffect(() => {
+      watchSteps();
+  }, []);
+  
+  // Function that counts the steps and updates them
+  const watchSteps = async () =>
+  {
+    Pedometer.watchStepCount((result) => 
     {
-      setDoc(doc(db, "Steps", currentUser?.uid ), 
-      {
-        totalSteps: stepsCounter,
-        uid: currentUser?.uid
-      })
-    };
+      stepsCounter = result.steps;
 
-    const ResetStepCount = async () =>
+      UpdateStepsInDatabase(stepsCounter);
+    });
+  };
+
+  // Eveytime WatchSteps gets called it calls UpdateStepsInDatabase to update steps in the database
+  const UpdateStepsInDatabase = async (stepsCounter) =>
+  {
+    setDoc(doc(db, "Steps", currentUser?.uid ), 
     {
-      // SetResetStepCount(previousSteps);
-      // stepsCounter = 0;
-      // result.steps = 0;
-      // console.log(previousSteps);
-      // SetStepCount(0);
-      // console.log(result.steps);
-      // Pedometer.watchStepCount((result) => 
-      // {
-      //   result.steps = 0;
-      // });
+      totalSteps: stepsCounter,
+      uid: currentUser?.uid
+    })
+  };
 
-      updateDoc(doc(db, "Steps", currentUser?.uid ), {
-            totalSteps: "0",
-          })
-    };
+  // Function that resets step count to zero in the database when the reset button is pressed
+  const ResetStepCount = async () =>
+  {
+    updateDoc(doc(db, "Steps", currentUser?.uid ), {
+      totalSteps: "0",
+    })
+  };
 
+  // Returns all the GUI components for the Steps page
   return (
     <View style={styles.container}>
       <View style={{height: 30}} />
 
-        {/* <Text>
-            {StepCount}
-        </Text> */}
       {workoutsDB.map((data) => {
         var DistanceCalc = data.totalSteps / 1312.34;
         var TotalDistance = DistanceCalc.toFixed(2);
@@ -135,9 +105,6 @@ function Steps() {
             )
           }
         })}
-
-        
-
 
     <View style={{ width:131}}>
         <Button title="Reset" onPress={() => ResetStepCount()} color='#000000'/> 

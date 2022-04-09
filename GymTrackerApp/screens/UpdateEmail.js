@@ -1,49 +1,49 @@
-import { StyleSheet, Text, View, Button, TextInput, Alert, Pressable, Image } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Alert } from 'react-native';
 import * as React from 'react';
 import { useState } from 'react';
-import { signInWithEmailAndPassword, signOut, updatePassword, sendPasswordResetEmail, updateEmail } from "firebase/auth";
-import { db, useAuth, authentication } from "../Firebase";
+import { updateEmail } from "firebase/auth";
+import { useAuth, authentication } from "../Firebase";
 
 function UpdateEmail() {
 
-    const currentUser = useAuth();
-    const [newEmail, setEmail] = useState(null);
+  const currentUser = useAuth();
+  const [newEmail, setEmail] = useState(null);
 
-
-    const changeEmail = async () => {
-        updateEmail(authentication.currentUser, newEmail)
+  // Function that allows the current logged in user to change their email
+  const changeEmail = async () => {
+      updateEmail(authentication.currentUser, newEmail)
+      .then(() => {
+        sendEmailVerification(authentication.currentUser)
         .then(() => {
-          sendEmailVerification(authentication.currentUser)
-          .then(() => {
-            navigation.navigate('LoginScreen');
-            Alert.alert
-            (
-              "Email sent to new email",
-              "Verify your email to be able to log in again!",
-              [
-                {
-                  text: "Cancel",
-                },
-              ],
-            );  
-
-          });
-        })
-        .catch((error) => {
+          navigation.navigate('LoginScreen');
           Alert.alert
           (
-            "Error",
-            "New email invalid or in use",
+            "Email sent to new email",
+            "Verify your email to be able to log in again!",
             [
               {
                 text: "Cancel",
               },
             ],
-          );        
-          });
+          );  
 
-      };
+        });
+      })
+      .catch((error) => {
+        Alert.alert
+        (
+          "Error",
+          "New email invalid or in use",
+          [
+            {
+              text: "Cancel",
+            },
+          ],
+        );        
+        });
+    };
 
+  // Returns all the GUI components for the UpdateEmail Screen
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
@@ -63,11 +63,9 @@ function UpdateEmail() {
 
             <View style={styles.space} />
 
-
             <View style={{width: 200}}>
               <Button color='#000000' title="Update Email" onPress={() => changeEmail() } />
             </View>
-       
     </View>
   );
 }

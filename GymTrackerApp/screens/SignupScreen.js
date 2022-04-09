@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, Button, TextInput, Alert, Image  } from 'react-native';
-// import * as React from 'react';
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { authentication } from '../Firebase';
 
@@ -10,21 +9,20 @@ function SignUpScreen({ navigation }) {
     const [confirmPassword, setConfirmPassword] = useState('')
     const logo = '../pictures/GymTrackerLogo.png';
 
-    // const [isSignedIn, setIsSignedIn] = useState(false);
-
+    // Function that creates a new user with an email and password
     const SignUpUser = () =>{
+      // User needs to confirm password to successfully create account
       if(passsword == confirmPassword)
       {
         createUserWithEmailAndPassword(authentication, email, passsword)
         .then((re) =>{
             console.log(re);
-            // setIsSignedIn(true)
             sendEmailVerification(authentication.currentUser)
             .then(() => {
               Alert.alert
               (
-                "Succes!",
-                "Successfully created account!",
+                "Verify!",
+                "Verify your email!",
                 [
                   {
                     text: "Cancel",
@@ -35,7 +33,6 @@ function SignUpScreen({ navigation }) {
 
               console.log("Email Sent!")
             });
-
         })
         .catch((re) =>{
             console.log(re);
@@ -95,6 +92,7 @@ function SignUpScreen({ navigation }) {
       }
     }
 
+    // Returns all the GUI components of the Sign up screen
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
@@ -108,7 +106,6 @@ function SignUpScreen({ navigation }) {
           onChangeText={text => setEmail(text)}
           placeholder="Email"
           textAlign={'center'}
-
         />
   
         <Text style={styles.textStyle}>Enter Password</Text>
@@ -145,8 +142,6 @@ function SignUpScreen({ navigation }) {
         </View>
 
         <View style={styles.bottom} />
-
-  
       </View>
     );
   }

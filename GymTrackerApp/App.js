@@ -1,7 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, TextInput, Image, Pressable  } from 'react-native';
 import * as React from 'react';
-
 import LoginScreen from './screens/LoginScreen';
 import SignUpScreen from './screens/SignupScreen';
 import MainMenuScreen from './screens/MainMenuScreen';
@@ -10,12 +9,9 @@ import UserProfile from './screens/UserProfile';
 import ProgressPictures from './screens/ProgressPictures';
 import Steps from './screens/Steps';
 import UpdateEmail from './screens/UpdateEmail';
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
 
 const Stack = createNativeStackNavigator();
 const logo = './pictures/GymTrackerLogo.png';
@@ -23,8 +19,9 @@ const shoe = './pictures/shoe.png';
 const dumbbell = './pictures/dumbbell.png';
 const profile = './pictures/profile.png';
 const pictures = './pictures/pictures.png';
+const Tab = createBottomTabNavigator();
 
-
+//Function for my homescreen that displays all the information of how my page home page looks
 function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
@@ -44,8 +41,7 @@ function HomeScreen({ navigation }) {
 );
 }
 
-const Tab = createBottomTabNavigator();
-
+//Different screens that are part of the tab navigation
 function Tabs()
 {
   return(
@@ -58,7 +54,7 @@ function Tabs()
   );
 }
 
-
+//Navigation container for navigating around all my different screens on the app
 function App() {
   return (
     <NavigationContainer>
