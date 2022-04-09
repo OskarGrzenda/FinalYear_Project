@@ -14,8 +14,16 @@ import UpdateEmail from './screens/UpdateEmail';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+
 const Stack = createNativeStackNavigator();
 const logo = './pictures/GymTrackerLogo.png';
+const shoe = './pictures/shoe.png';
+const dumbbell = './pictures/dumbbell.png';
+const profile = './pictures/profile.png';
+const pictures = './pictures/pictures.png';
+
 
 function HomeScreen({ navigation }) {
   return (
@@ -32,10 +40,24 @@ function HomeScreen({ navigation }) {
       </View>
 
       <View style={styles.bottom} />
-
     </View>
 );
 }
+
+const Tab = createBottomTabNavigator();
+
+function Tabs()
+{
+  return(
+    <Tab.Navigator>
+      <Tab.Screen name="Workouts"  component={MainMenuScreen} options={{tabBarIcon: ({ focused }) => (<Image source={require(dumbbell)} style={{ width: 40, height: 40, resizeMode: 'contain' }}/>)}} />
+      <Tab.Screen name="Pictures" component={ProgressPictures} options={{tabBarIcon: ({ focused }) => (<Image source={require(pictures)} style={{ width: 35, height: 35, resizeMode: 'contain' }}/>)}}/>
+      <Tab.Screen name="Steps" component={Steps} options={{tabBarIcon: ({ focused }) => (<Image source={require(shoe)} style={{ width: 40, height: 40, resizeMode: 'contain' }}/>)}}/>
+      <Tab.Screen name="Profile" component={UserProfile} options={{tabBarIcon: ({ focused }) => (<Image source={require(profile)} style={{ width: 30, height: 30, resizeMode: 'contain' }}/>)}}/>
+    </Tab.Navigator>
+  );
+}
+
 
 function App() {
   return (
@@ -44,20 +66,14 @@ function App() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
-        <Stack.Screen name="MainMenuScreen" component={MainMenuScreen} />
+        <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }}/>
         <Stack.Screen name="ExerciseScreen" component={ExerciseScreen} />
-        <Stack.Screen name="UserProfile" component={UserProfile} />
-        <Stack.Screen name="ProgressPictures" component={ProgressPictures} />
-        <Stack.Screen name="Steps" component={Steps} />
         <Stack.Screen name="UpdateEmail" component={UpdateEmail} />
-
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
 export default App;
-
 
 const styles = StyleSheet.create
 ({

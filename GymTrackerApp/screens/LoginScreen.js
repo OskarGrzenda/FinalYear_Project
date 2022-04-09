@@ -27,7 +27,7 @@ function LogInScreen({ navigation }) {
       // console.log(authentication.currentUser.emailVerified);
       // if(authentication.currentUser.emailVerified == true)
       // {
-        navigation.navigate('MainMenuScreen')
+        navigation.navigate('Tabs');
       // }
       // else
       // {

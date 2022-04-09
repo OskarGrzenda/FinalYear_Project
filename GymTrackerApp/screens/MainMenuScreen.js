@@ -4,6 +4,7 @@ import AddWorkout from '../components/addWorkout';
 import { db, useAuth, authentication } from "../Firebase";
 import { collection, doc, setDoc, deleteDoc, onSnapshot, Timestamp } from 'firebase/firestore';
 import { signOut  } from "firebase/auth";
+import NavigationTabs from '../components/NavigationTabs';
 
   const MainMenuScreen = ({navigation}) => {
 
@@ -95,7 +96,7 @@ import { signOut  } from "firebase/auth";
       {/* <Text>Currently logged in as: {currentUser?.email}</Text>
       <Text>User Id: {currentUser?.uid}</Text> */}
 
-        <View style={{ flexDirection:"row"}} >
+        {/* <View style={{ flexDirection:"row"}} >
           <View style={{ width:131}}>
             <Button color= '#000000' title="Profile" onPress={() => navigation.navigate('UserProfile')}/>
           </View>
@@ -105,7 +106,7 @@ import { signOut  } from "firebase/auth";
           <View style={{ width:131}}>
             <Button title="Steps" onPress={() => {navigation.navigate('Steps') }} color='#000000'/> 
           </View>
-        </View>
+        </View> */}
 
         <View style={styles.space} />
 
@@ -119,7 +120,7 @@ import { signOut  } from "firebase/auth";
                 return (
                   <View>
 
-                    <View style={{width: '100%', borderBottomColor: 'black', borderBottomWidth: 1,}}>
+                    <View style={{width: 390, borderBottomColor: 'black', borderBottomWidth: 1,}}>
                     </View>
                     
 
@@ -138,7 +139,7 @@ import { signOut  } from "firebase/auth";
 
 
 
-                    <View style={{width: '100%', borderBottomColor: 'black', borderBottomWidth: 1,}}>
+                    <View style={{width: 390, borderBottomColor: 'black', borderBottomWidth: 1,}}>
                     </View>
 
                     <View style={styles.space} />
@@ -151,9 +152,13 @@ import { signOut  } from "firebase/auth";
           <View style={styles.space} />
 
 
+          {/* <NavigationTabs></NavigationTabs> */}
+
        </ScrollView>
 
       </View>
+
+      
     );
   }
 

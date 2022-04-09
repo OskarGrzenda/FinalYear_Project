@@ -10,7 +10,7 @@ import { db, useAuth, authentication } from "../Firebase";
 
 function Steps() {
 
-    // const [StepCount, SetStepCount] = useState(0);
+    const [StepCount, SetStepCount] = useState(0);
     const [workoutsDB, setWorkoutsDB] = useState([]);
 
     // var previousSteps = 0;
@@ -22,7 +22,7 @@ function Steps() {
 
     const [resetSteps, SetResetStepCount] = useState(0);
     const [previousSteps, SetPreviousStepCount] = useState(0);
-
+    var stepsCounter = 0;
       
     const currentUser = useAuth();
 
@@ -42,8 +42,10 @@ function Steps() {
 
       Pedometer.watchStepCount((result) => 
       {
-        SetPreviousStepCount(result.steps);
-        var stepsCounter = result.steps;
+        // SetPreviousStepCount(result.steps);
+        // SetStepCount(result.steps);
+
+        stepsCounter = result.steps;
         // result.steps = result.steps - resetSteps;
         // var newStepsCounter = result.steps;
         // console.log("StepCounter " + stepsCounter);
@@ -64,8 +66,17 @@ function Steps() {
 
     const ResetStepCount = async () =>
     {
-      SetResetStepCount(previousSteps);
+      // SetResetStepCount(previousSteps);
+      // stepsCounter = 0;
+      // result.steps = 0;
       // console.log(previousSteps);
+      // SetStepCount(0);
+      // console.log(result.steps);
+      // Pedometer.watchStepCount((result) => 
+      // {
+      //   result.steps = 0;
+      // });
+
       updateDoc(doc(db, "Steps", currentUser?.uid ), {
             totalSteps: "0",
           })

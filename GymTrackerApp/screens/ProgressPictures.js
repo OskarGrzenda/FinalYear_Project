@@ -76,9 +76,9 @@ const ProgressPictures = () => {
             console.log("The Url " + x);
             //Set New Exercise Name & Add it to a new document in the collection 
             // const randomProgressID = Math.random().toString();
-            var today = new Date().toString();
+            // var today = new Date().toString();
             
-             setDoc(doc(db, "ProgressInfo", today ), {
+             setDoc(doc(db, "ProgressInfo", randomCollection ), {
               date: Timestamp.now().toDate(),
               weight: weight,
               uid: currentUser.uid,
