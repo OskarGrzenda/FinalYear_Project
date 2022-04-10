@@ -14,7 +14,7 @@ How to run the project
 
 ## Explore
 
-In the GitHub repository you can also find other files such as `wireframe.PNG`, `Project Plan.docx` and `Project Slides.pptx`. Within those files you can find more information regarding the project.
+In the GitHub repository you can also find other files such as `wireframe.PNG`, `Project Plan.docx`, `Dissertation.pdf` and `Project Slides.pptx`. Within those files you can find more information regarding the project.
 
 ## React Native
 
