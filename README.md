@@ -1,6 +1,8 @@
 # Final Year Project
 This repository contains my 4th year final year project. It is a React Native mobile application. The purpose of the mobile app is to allow gym goers to track their gym workouts.
 
+![](SystemDesign.PNG)
+
 ## Run
 
 How to run the project
