@@ -46,11 +46,28 @@ function Steps() {
     })
   };
 
+    // Start the counter and initially set steps to 0
+    const StartCounter = async () =>
+    {
+      setDoc(doc(db, "Steps", currentUser?.uid ), 
+      {
+        totalSteps: 0,
+        uid: currentUser?.uid
+      })
+    };
+
   // Function that resets step count to zero in the database when the reset button is pressed
   const ResetStepCount = async () =>
   {
+    // Pedometer.watchStepCount((result) => 
+    // {
+    //   result.steps = 0;
+
+    //   // UpdateStepsInDatabase(stepsCounter);
+    // });
+
     updateDoc(doc(db, "Steps", currentUser?.uid ), {
-      totalSteps: "0",
+      totalSteps: 0,
     })
   };
 
@@ -106,8 +123,16 @@ function Steps() {
           }
         })}
 
+        <View style={{ flexDirection:"row", justifyContent: 'center' }} >
+
     <View style={{ width:131}}>
-        <Button title="Reset" onPress={() => ResetStepCount()} color='#000000'/> 
+      <Button title="Start" onPress={() => StartCounter()} color='#000000'/> 
+    </View>
+
+    <View style={{ width:131}}>
+      <Button title="Reset" onPress={() => ResetStepCount()} color='#000000'/> 
+    </View>
+
     </View>
 
   </View>

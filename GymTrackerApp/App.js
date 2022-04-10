@@ -46,10 +46,10 @@ function Tabs()
 {
   return(
     <Tab.Navigator>
-      <Tab.Screen name="Workouts"  component={MainMenuScreen} options={{tabBarIcon: ({ focused }) => (<Image source={require(dumbbell)} style={{ width: 40, height: 40, resizeMode: 'contain' }}/>)}} />
-      <Tab.Screen name="Pictures" component={ProgressPictures} options={{tabBarIcon: ({ focused }) => (<Image source={require(pictures)} style={{ width: 35, height: 35, resizeMode: 'contain' }}/>)}}/>
-      <Tab.Screen name="Steps" component={Steps} options={{tabBarIcon: ({ focused }) => (<Image source={require(shoe)} style={{ width: 40, height: 40, resizeMode: 'contain' }}/>)}}/>
-      <Tab.Screen name="Profile" component={UserProfile} options={{tabBarIcon: ({ focused }) => (<Image source={require(profile)} style={{ width: 30, height: 30, resizeMode: 'contain' }}/>)}}/>
+      <Tab.Screen name="Workouts"  component={MainMenuScreen} options={{headerTitleAlign: 'center', tabBarIcon: ({ focused }) => (<Image source={require(dumbbell)} style={{ width: 40, height: 40, resizeMode: 'contain' }}/> )}} />
+      <Tab.Screen name="Pictures" component={ProgressPictures} options={{headerTitleAlign: 'center', tabBarIcon: ({ focused }) => (<Image source={require(pictures)} style={{ width: 35, height: 35, resizeMode: 'contain' }}/>)}}/>
+      <Tab.Screen name="Steps" component={Steps} options={{headerTitleAlign: 'center', tabBarIcon: ({ focused }) => (<Image source={require(shoe)} style={{ width: 40, height: 40, resizeMode: 'contain' }}/>)}}/>
+      <Tab.Screen name="Profile" component={UserProfile} options={{headerTitleAlign: 'center', tabBarIcon: ({ focused }) => (<Image source={require(profile)} style={{ width: 30, height: 30, resizeMode: 'contain' }}/>)}}/>
     </Tab.Navigator>
   );
 }
@@ -59,12 +59,12 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Home', headerTitleAlign: 'center' }}/>
+        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ title: 'Log In', headerTitleAlign: 'center' }}  />
+        <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ title: 'Sign Up', headerTitleAlign: 'center' }}/>
         <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }}/>
-        <Stack.Screen name="ExerciseScreen" component={ExerciseScreen} />
-        <Stack.Screen name="UpdateEmail" component={UpdateEmail} />
+        <Stack.Screen name="ExerciseScreen" component={ExerciseScreen} options={{ title: 'Exercises', headerTitleAlign: 'center' }} />
+        <Stack.Screen name="UpdateEmail" component={UpdateEmail} options={{ title: 'Update Email', headerTitleAlign: 'center' }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

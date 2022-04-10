@@ -2,7 +2,7 @@ import { StyleSheet, View, Button, ScrollView, Alert  } from 'react-native';
 import React, { useState, useEffect } from 'react'
 import AddWorkout from '../components/addWorkout';
 import { db, useAuth } from "../Firebase";
-import { collection, doc, setDoc, deleteDoc, onSnapshot, Timestamp } from 'firebase/firestore';
+import { collection, doc, setDoc, deleteDoc, onSnapshot, Timestamp, query, orderBy } from 'firebase/firestore';
 
 const MainMenuScreen = ({navigation}) => {
 
@@ -14,7 +14,10 @@ const MainMenuScreen = ({navigation}) => {
   // UseEffect function gets access to the WorkoutDay collection from firestore
   // Listens to real-time updates to return data in real-time
   useEffect (() => {
-    const realtime = onSnapshot(collection(db, "WorkoutDay"), (snapshot) => {
+    const collectionRef = collection(db, "WorkoutDay");
+    const q = query(collectionRef, orderBy("date", "desc"));
+
+    const realtime = onSnapshot(q, (snapshot) => {
       setWorkoutsDB(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     });
     return realtime;
@@ -99,7 +102,7 @@ const MainMenuScreen = ({navigation}) => {
                     
                     <View style={{ flexDirection:"row", justifyContent: 'center' }} key={data.id} >
                         <View style={{width: 200, padding:10}} >
-                          <Button onPress={() => openWorkout(data.id) } title={data.name}  color='grey'/> 
+                          <Button onPress={() => openWorkout(data.id) } title={data.name}  color='black'/> 
                         </View>
 
                         <View style={styles.space} />

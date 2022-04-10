@@ -204,6 +204,8 @@ const UserProfile = ({navigation}) => {
 
           <View style={styles.space} />
 
+          <View style={styles.space} />
+
           <View style={{width: 200}}>
             <Button title="Update Email" color='black' onPress={() => navigation.navigate('UpdateEmail')}/>
           </View>

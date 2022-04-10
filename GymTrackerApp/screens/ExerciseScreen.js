@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, Button, TextInput, ScrollView, Alert } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, ScrollView, Alert, TextStroke } from 'react-native';
 import React, { useState, useEffect } from 'react'
 import { db, useAuth } from "../Firebase";
-import { collection, doc, setDoc, deleteDoc, onSnapshot} from 'firebase/firestore';
+import { collection, doc, setDoc, deleteDoc, onSnapshot, Timestamp, query, orderBy} from 'firebase/firestore';
+import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 function ExerciseScreen( { route }){
 
@@ -34,7 +35,10 @@ function ExerciseScreen( { route }){
   // UseEffect function gets access to the ExercisesDB collection from firestore
   // Listens to real-time updates to return data in real-time
   useEffect (() => {
-    const realtime = onSnapshot(collection(db, "ExercisesDB"), (snapshot) => {
+    const collectionRef = collection(db, "ExercisesDB");
+    const q = query(collectionRef, orderBy("date", "desc"));
+    
+    const realtime = onSnapshot(q, (snapshot) => {
       setWorkoutsDB(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     });
     return realtime;
@@ -52,7 +56,9 @@ function ExerciseScreen( { route }){
         sets: sets,
         exerciseUID: randomExerciseID,
         buttonID: id,
-        uid: currentUser?.uid
+        uid: currentUser?.uid,
+        date: Timestamp.now().toDate(),
+
     })
   };
 
@@ -125,35 +131,47 @@ function ExerciseScreen( { route }){
         <View style={{ flexDirection:"row" }}>
           <Button onPress={() => sendToDatabase() } title='Add' color='#000000' /> 
         </View>
+        <View style={styles.space} />
+
+        <View style={{width: 390, borderBottomColor: 'black', borderBottomWidth: 1,}}/>
 
         <View style={styles.space} />
+
+
 
         {workoutsDB.map((data) => {
           if(data.buttonID == id && currentUser?.uid == data.uid)
             {
               return(
                 <View>
-                  <View style={{alignItems: 'center', flexDirection:"row"}}>
+                    {/* <View style={{width: 390, borderBottomColor: 'black', borderBottomWidth: 1,}}/> */}
 
-                    <View style={{alignItems: 'center', borderColor: 'black', borderWidth: 4, width: 300}}>
-                      <Text style={{fontSize: 25, fontWeight: 'bold', color: '#ff6a00'}}>{data.exercise}</Text>
+                      <View style={{alignItems: 'center', flexDirection:"row"}}>
 
-                      <View style={{ flexDirection:"row", fontWeight: 'bold' }}>
-                        <Text style={styles.textStyleExercises}>{data.weight}</Text>
-                        <View style={styles.spaceRow} />
-                        <Text style={styles.textStyleExercises}> x  {data.sets}  x</Text>
-                        <View style={styles.spaceRow} />
-                        <Text style={styles.textStyleExercises}>{data.reps}</Text>
+                        <View style={{alignItems: 'center', width: 300}}>
+
+                          <Text style={{fontSize: 25, fontWeight: 'bold', color: 'white', textShadowColor: 'black', textShadowRadius: 12, textShadowOffset: {width: 2, height: 2}}}>{data.exercise}</Text>
+
+                          <View style={{ flexDirection:"row", fontWeight: 'bold' }}>
+                            <Text style={styles.textStyleExercises}>{data.weight}</Text>
+                            <View style={styles.spaceRow} />
+                            <Text style={styles.textStyleExercises}> x  {data.sets}  x</Text>
+                            <View style={styles.spaceRow} />
+                            <Text style={styles.textStyleExercises}>{data.reps}</Text>
+                          </View>
+                        </View> 
+                        
+                        <View style={styles.space} />
+
+                        <View>
+                          <Button  title='x' color='red' onPress={() => deletDoc(data.id, data.exercise) }></Button> 
+                        </View>
+
                       </View>
-                    </View> 
-                    
-                    <View style={styles.space} />
+                      <View style={styles.space} />
 
-                    <View style={{width: 50}}>
-                      <Button  title='x' color='red' onPress={() => deletDoc(data.id, data.exercise) }></Button> 
-                    </View>
+                    <View style={{width: 390, borderBottomColor: 'black', borderBottomWidth: 1,}}/>
 
-                  </View>
                   <View style={styles.space} />
                 </View>
               )
@@ -195,7 +213,12 @@ const styles = StyleSheet.create
   textStyleExercises: {
     fontWeight: 'bold',
     justifyContent: 'center',
-    fontSize: 20
+    fontSize: 20,
+    color: "black",
+    textShadowColor: 'grey', textShadowRadius: 15, textShadowOffset: { 
+      width: 2,
+      height: 2
+    }
   },
   space: {
     width: 20, 

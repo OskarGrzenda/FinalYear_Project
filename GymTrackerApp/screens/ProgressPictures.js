@@ -3,7 +3,7 @@ import { StyleSheet, View, TextInput, Button, Text, Image, ScrollView, Alert} fr
 import * as ImagePicker from 'expo-image-picker';
 import { db, useAuth } from "../Firebase";
 import { ref, uploadBytes, getStorage, getDownloadURL, deleteObject } from "firebase/storage";
-import { collection, doc, setDoc, deleteDoc, onSnapshot, Timestamp } from 'firebase/firestore';
+import { collection, doc, setDoc, deleteDoc, onSnapshot, Timestamp, query, orderBy } from 'firebase/firestore';
 
 const ProgressPictures = () => {
 
@@ -15,7 +15,10 @@ const ProgressPictures = () => {
   // UseEffect function gets access to the ProgressInfo collection from firestore
   // Listens to real-time updates to return data in real-time
   useEffect (() => {
-    const realtime = onSnapshot(collection(db, "ProgressInfo"), (snapshot) => {
+    const collectionRef = collection(db, "ProgressInfo");
+    const q = query(collectionRef, orderBy("date", "desc"));
+
+    const realtime = onSnapshot(q, (snapshot) => {
       setWorkoutsDB(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     });
     return realtime;
