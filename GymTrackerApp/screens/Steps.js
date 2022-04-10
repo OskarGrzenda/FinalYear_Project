@@ -59,13 +59,6 @@ function Steps() {
   // Function that resets step count to zero in the database when the reset button is pressed
   const ResetStepCount = async () =>
   {
-    // Pedometer.watchStepCount((result) => 
-    // {
-    //   result.steps = 0;
-
-    //   // UpdateStepsInDatabase(stepsCounter);
-    // });
-
     updateDoc(doc(db, "Steps", currentUser?.uid ), {
       totalSteps: 0,
     })

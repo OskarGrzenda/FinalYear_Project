@@ -2,7 +2,6 @@ import { StyleSheet, Text, View, Button, TextInput, ScrollView, Alert, TextStrok
 import React, { useState, useEffect } from 'react'
 import { db, useAuth } from "../Firebase";
 import { collection, doc, setDoc, deleteDoc, onSnapshot, Timestamp, query, orderBy} from 'firebase/firestore';
-import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 function ExerciseScreen( { route }){
 
@@ -34,6 +33,7 @@ function ExerciseScreen( { route }){
 
   // UseEffect function gets access to the ExercisesDB collection from firestore
   // Listens to real-time updates to return data in real-time
+  // Orders by date in descending order
   useEffect (() => {
     const collectionRef = collection(db, "ExercisesDB");
     const q = query(collectionRef, orderBy("date", "desc"));
@@ -144,7 +144,6 @@ function ExerciseScreen( { route }){
             {
               return(
                 <View>
-                    {/* <View style={{width: 390, borderBottomColor: 'black', borderBottomWidth: 1,}}/> */}
 
                       <View style={{alignItems: 'center', flexDirection:"row"}}>
 

@@ -13,6 +13,7 @@ const MainMenuScreen = ({navigation}) => {
 
   // UseEffect function gets access to the WorkoutDay collection from firestore
   // Listens to real-time updates to return data in real-time
+  // Orders by date in descending order
   useEffect (() => {
     const collectionRef = collection(db, "WorkoutDay");
     const q = query(collectionRef, orderBy("date", "desc"));

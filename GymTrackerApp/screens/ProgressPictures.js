@@ -14,6 +14,7 @@ const ProgressPictures = () => {
 
   // UseEffect function gets access to the ProgressInfo collection from firestore
   // Listens to real-time updates to return data in real-time
+  // Orders by date in descending order
   useEffect (() => {
     const collectionRef = collection(db, "ProgressInfo");
     const q = query(collectionRef, orderBy("date", "desc"));
