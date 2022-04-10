@@ -5,7 +5,7 @@ This repository contains my 4th year final year project. It is a React Native mo
 
 How to run the project
 
-1. Install Android Emulator / Install Expo Go app on your mobile device
+1. Install Android Emulator (https://developer.android.com/studio) or Install Expo Go app on your mobile device 
 2. Set up and emulator and start it
 3. Clone the repository
 4. Open the 'GymTrackerApp' folder in the terminal
@@ -14,11 +14,13 @@ How to run the project
 
 ## Explore
 
-In the GitHub repository you can also find other files such as 'wireframe.PNG', 'Project Plan.docx' and 'Project Slides.pptx'. Within those files you can find more information regarding the project.
+In the GitHub repository you can also find other files such as `wireframe.PNG`, `Project Plan.docx` and `Project Slides.pptx`. Within those files you can find more information regarding the project.
 
 ## React Native
 
 React Native is a frameowrk which allows you to build cross-platform applications for Android and Ios. My main development focus was on a Android application. I decided to use React Native as my framework of choice as after I had done research on it, it seemed like it would be a good fit for my project and is a very popular framework for mobile app development.
+
+<img src="https://www.datocms-assets.com/45470/1631026680-logo-react-native.png"  height="40">
 
 ## Expo
 
