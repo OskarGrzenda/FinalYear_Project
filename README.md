@@ -6,7 +6,7 @@ This repository contains my 4th year final year project. It is a React Native mo
 How to run the project
 
 1. Install Android Emulator (https://developer.android.com/studio) or Install Expo Go app on your mobile device 
-2. Set up and emulator and start it
+2. Set up an emulator and start it
 3. Clone the repository
 4. Open the 'GymTrackerApp' folder in the terminal
 5. Run 'npm install'
